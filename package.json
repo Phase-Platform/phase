@@ -2,7 +2,7 @@
   "name": "phase-platform",
   "version": "1.0.0",
   "private": true,
-  "description": "Enterprise Software Development Lifecycle Management Platform",
+  "description": "Enterprise SDLC Management Platform",
   "main": "index.js",
  "scripts": {
     "build": "turbo run build",

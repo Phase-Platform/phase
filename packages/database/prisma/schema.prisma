@@ -1,0 +1,717 @@
+// Phase Platform Database Schema
+// This is your Prisma schema file for Phase Platform
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// User Management & Authentication
+// ==========================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  
+  // Profile Information
+  title         String?
+  department    String?
+  timezone      String?   @default("UTC")
+  preferences   Json?     @db.JsonB
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  accounts         Account[]
+  sessions         Session[]
+  projectMemberships ProjectMember[]
+  assignedFeatures Feature[] @relation("AssignedUser")
+  assignedBugs     Bug[] @relation("AssignedUser")
+  reportedBugs     Bug[] @relation("ReportedUser")
+  testExecutions   TestExecution[]
+  comments         Comment[]
+  activityLogs     ActivityLog[]
+
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ==========================================
+// Organization & Project Management
+// ==========================================
+
+model Organization {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  logo        String?
+  website     String?
+  isActive    Boolean @default(true)
+
+  // Settings
+  settings Json? @db.JsonB
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  projects Project[]
+
+  @@index([isActive])
+  @@map("organizations")
+}
+
+model Project {
+  id             String        @id @default(cuid())
+  name           String
+  description    String?
+  status         ProjectStatus @default(PLANNING)
+  priority       Priority      @default(MEDIUM)
+  
+  // Project Details
+  startDate      DateTime?
+  endDate        DateTime?
+  budget         Decimal?      @db.Decimal(12, 2)
+  repository     String?
+  
+  // Settings & Metadata
+  settings       Json?         @db.JsonB
+  metadata       Json?         @db.JsonB
+  
+  // Organization
+  organizationId String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  members         ProjectMember[]
+  sprints         Sprint[]
+  features        Feature[]
+  bugs            Bug[]
+  testCases       TestCase[]
+  testSuites      TestSuite[]
+  deployments     Deployment[]
+  releases        Release[]
+  environments    Environment[]
+  comments        Comment[]
+  activityLogs    ActivityLog[]
+
+  @@index([status])
+  @@index([organizationId])
+  @@index([createdAt])
+  @@map("projects")
+}
+
+model ProjectMember {
+  id        String      @id @default(cuid())
+  projectId String
+  userId    String
+  role      ProjectRole @default(DEVELOPER)
+  
+  // Permissions
+  permissions Json? @db.JsonB
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+  @@map("project_members")
+}
+
+// ==========================================
+// Sprint & Iteration Management
+// ==========================================
+
+model Sprint {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  status      SprintStatus @default(PLANNED)
+  goal        String?
+  
+  // Sprint Timeline
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  // Sprint Metrics
+  capacity    Int?         // Total story points capacity
+  commitment  Int?         // Committed story points
+  
+  // Project Reference
+  projectId   String
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project  Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  features Feature[]
+  bugs     Bug[]
+
+  @@index([projectId])
+  @@index([status])
+  @@index([startDate])
+  @@map("sprints")
+}
+
+// ==========================================
+// Feature & User Story Management
+// ==========================================
+
+model Feature {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  status      FeatureStatus @default(BACKLOG)
+  priority    Priority      @default(MEDIUM)
+  
+  // Story Details
+  storyPoints    Int?
+  businessValue  Int?
+  acceptanceCriteria String?
+  
+  // Assignment
+  assignedUserId String?
+  
+  // Project & Sprint
+  projectId   String
+  sprintId    String?
+  
+  // Feature Hierarchy
+  parentFeatureId String?
+  
+  // Labels & Tags
+  labels      String[]
+  tags        Json?        @db.JsonB
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  completedAt DateTime?
+
+  // Relations
+  project         Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sprint          Sprint?     @relation(fields: [sprintId], references: [id])
+  assignedUser    User?       @relation("AssignedUser", fields: [assignedUserId], references: [id])
+  parentFeature   Feature?    @relation("FeatureHierarchy", fields: [parentFeatureId], references: [id])
+  childFeatures   Feature[]   @relation("FeatureHierarchy")
+  testCases       TestCase[]
+  bugs            Bug[]
+  comments        Comment[]
+  activityLogs    ActivityLog[]
+
+  @@index([projectId])
+  @@index([sprintId])
+  @@index([status])
+  @@index([assignedUserId])
+  @@index([parentFeatureId])
+  @@map("features")
+}
+
+// ==========================================
+// Bug & Issue Management
+// ==========================================
+
+model Bug {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      BugStatus  @default(OPEN)
+  severity    Severity   @default(MEDIUM)
+  priority    Priority   @default(MEDIUM)
+  
+  // Bug Details
+  stepsToReproduce String?
+  expectedBehavior String?
+  actualBehavior   String?
+  environment      String?
+  
+  // Assignment & Tracking
+  assignedUserId String?
+  reportedUserId String?
+  
+  // Project & Sprint
+  projectId   String
+  sprintId    String?
+  featureId   String?
+  
+  // Resolution
+  resolution  String?
+  
+  // Labels & Tags
+  labels      String[]
+  tags        Json?      @db.JsonB
+
+  // Timestamps
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  resolvedAt DateTime?
+  closedAt   DateTime?
+
+  // Relations
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sprint       Sprint?  @relation(fields: [sprintId], references: [id])
+  feature      Feature? @relation(fields: [featureId], references: [id])
+  assignedUser User?    @relation("AssignedUser", fields: [assignedUserId], references: [id])
+  reportedUser User?    @relation("ReportedUser", fields: [reportedUserId], references: [id])
+  comments     Comment[]
+  activityLogs ActivityLog[]
+
+  @@index([projectId])
+  @@index([sprintId])
+  @@index([featureId])
+  @@index([status])
+  @@index([assignedUserId])
+  @@index([reportedUserId])
+  @@map("bugs")
+}
+
+// ==========================================
+// Test Management
+// ==========================================
+
+model TestSuite {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  projectId   String
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  testCases TestCase[]
+
+  @@index([projectId])
+  @@map("test_suites")
+}
+
+model TestCase {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  steps       String[]
+  expected    String
+  status      TestCaseStatus @default(ACTIVE)
+  priority    Priority       @default(MEDIUM)
+  type        TestType       @default(FUNCTIONAL)
+  
+  // Test Details
+  preconditions  String?
+  testData       Json?         @db.JsonB
+  estimatedTime  Int?          // in minutes
+  
+  // Project Relations
+  projectId   String
+  featureId   String?
+  testSuiteId String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project    Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  feature    Feature?        @relation(fields: [featureId], references: [id])
+  testSuite  TestSuite?      @relation(fields: [testSuiteId], references: [id])
+  executions TestExecution[]
+
+  @@index([projectId])
+  @@index([featureId])
+  @@index([testSuiteId])
+  @@index([status])
+  @@map("test_cases")
+}
+
+model TestExecution {
+  id           String              @id @default(cuid())
+  testCaseId   String
+  executedBy   String
+  status       TestExecutionStatus @default(NOT_EXECUTED)
+  notes        String?
+  defects      String[]
+  
+  // Execution Details
+  actualResult String?
+  environment  String?
+  version      String?
+  duration     Int?                // in seconds
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  testCase TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  executor User     @relation(fields: [executedBy], references: [id])
+
+  @@index([testCaseId])
+  @@index([executedBy])
+  @@index([status])
+  @@map("test_executions")
+}
+
+// ==========================================
+// Release & Deployment Management
+// ==========================================
+
+model Release {
+  id          String        @id @default(cuid())
+  name        String
+  version     String
+  description String?
+  status      ReleaseStatus @default(PLANNED)
+  
+  // Release Details
+  releaseDate DateTime?
+  notes       String?
+  changelog   Json?         @db.JsonB
+  
+  // Project Reference
+  projectId   String
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  deployments Deployment[]
+
+  @@index([projectId])
+  @@index([status])
+  @@map("releases")
+}
+
+model Environment {
+  id          String  @id @default(cuid())
+  name        String
+  type        EnvironmentType
+  url         String?
+  description String?
+  projectId   String
+
+  // Environment Config
+  config      Json?   @db.JsonB
+  variables   Json?   @db.JsonB
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  deployments Deployment[]
+
+  @@unique([projectId, name])
+  @@index([projectId])
+  @@map("environments")
+}
+
+model Deployment {
+  id            String           @id @default(cuid())
+  version       String
+  status        DeploymentStatus @default(PENDING)
+  
+  // Deployment Details
+  branch        String?
+  commitHash    String?
+  buildNumber   String?
+  
+  // Environment & Project
+  environmentId String
+  projectId     String
+  releaseId     String?
+  
+  // Deployment Metadata
+  deployedBy    String?
+  rollbackTo    String?          // Previous deployment ID
+  notes         String?
+  
+  // Timestamps
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deployedAt DateTime?
+
+  // Relations
+  environment Environment @relation(fields: [environmentId], references: [id])
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  release     Release?    @relation(fields: [releaseId], references: [id])
+
+  @@index([environmentId])
+  @@index([projectId])
+  @@index([releaseId])
+  @@index([status])
+  @@map("deployments")
+}
+
+// ==========================================
+// Communication & Collaboration
+// ==========================================
+
+model Comment {
+  id        String      @id @default(cuid())
+  content   String
+  authorId  String
+  
+  // Polymorphic References
+  projectId String?
+  featureId String?
+  bugId     String?
+  
+  // Comment Threading
+  parentId  String?
+  
+  // Metadata
+  metadata  Json?       @db.JsonB
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  author   User      @relation(fields: [authorId], references: [id])
+  project  Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  feature  Feature?  @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  bug      Bug?      @relation(fields: [bugId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentThread", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentThread")
+
+  @@index([authorId])
+  @@index([projectId])
+  @@index([featureId])
+  @@index([bugId])
+  @@index([parentId])
+  @@map("comments")
+}
+
+model ActivityLog {
+  id        String           @id @default(cuid())
+  action    ActivityAction
+  details   String?
+  metadata  Json?            @db.JsonB
+  
+  // Actor
+  userId    String
+  
+  // Target Resources
+  projectId String?
+  featureId String?
+  bugId     String?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id])
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  feature Feature? @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  bug     Bug?     @relation(fields: [bugId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([featureId])
+  @@index([bugId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+// ==========================================
+// Enums
+// ==========================================
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  DEVELOPER
+  TESTER
+  USER
+}
+
+enum ProjectRole {
+  OWNER
+  MANAGER
+  DEVELOPER
+  TESTER
+  VIEWER
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum FeatureStatus {
+  BACKLOG
+  SELECTED
+  IN_PROGRESS
+  REVIEW
+  TESTING
+  DONE
+  CANCELLED
+}
+
+enum BugStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  REOPENED
+}
+
+enum TestCaseStatus {
+  ACTIVE
+  INACTIVE
+  DEPRECATED
+}
+
+enum TestExecutionStatus {
+  NOT_EXECUTED
+  PASSED
+  FAILED
+  BLOCKED
+  SKIPPED
+}
+
+enum ReleaseStatus {
+  PLANNED
+  IN_PROGRESS
+  TESTING
+  READY
+  DEPLOYED
+  CANCELLED
+}
+
+enum DeploymentStatus {
+  PENDING
+  IN_PROGRESS
+  SUCCESS
+  FAILED
+  ROLLED_BACK
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum TestType {
+  FUNCTIONAL
+  INTEGRATION
+  UNIT
+  PERFORMANCE
+  SECURITY
+  USABILITY
+  REGRESSION
+}
+
+enum EnvironmentType {
+  DEVELOPMENT
+  STAGING
+  PRODUCTION
+  TESTING
+}
+
+enum ActivityAction {
+  CREATE
+  UPDATE
+  DELETE
+  ASSIGN
+  COMMENT
+  DEPLOY
+  RELEASE
+  LOGIN
+  LOGOUT
+}
