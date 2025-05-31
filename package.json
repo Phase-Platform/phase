@@ -1,47 +1,110 @@
 {
   "name": "phase-platform",
   "version": "1.0.0",
+  "description": "Phase Platform - Comprehensive Software Development Lifecycle Management System",
   "private": true,
-  "description": "Enterprise SDLC Management Platform",
-  "main": "index.js",
- "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "type-check": "turbo run type-check",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
-    "test": "turbo run test",
-    "test:watch": "turbo run test:watch",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "db:generate": "turbo run db:generate",
-    "db:push": "turbo run db:push",
-    "db:migrate": "turbo run db:migrate",
-    "db:seed": "turbo run db:seed",
-    "db:studio": "turbo run db:studio",
-    "db:reset": "turbo run db:reset",
-    "postinstall": "pnpm run db:generate"
+  "author": "Phase Team",
+  "license": "Apache-2.0",
+  "keywords": [
+    "sdlc",
+    "project-management",
+    "agile",
+    "testing",
+    "deployment",
+    "phase-platform"
+  ],
+  "homepage": "https://github.com/phase-platform/phase",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phase-platform/phase.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phase-platform/phase/issues"
+  },
+  "engines": {
+    "node": ">=18.17.0",
+    "pnpm": ">=8.6.0"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "start": "turbo start",
+    "lint": "turbo lint",
+    "clean": "turbo clean && scripts\\clean.bat",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "type-check": "turbo type-check",
+    "test": "turbo test",
+    "test:watch": "turbo test:watch",
+    "test:coverage": "turbo test:coverage",
+    "db:generate": "turbo db:generate",
+    "db:push": "turbo db:push",
+    "db:migrate": "turbo db:migrate",
+    "db:studio": "turbo db:studio",
+    "db:seed": "turbo db:seed",
+    "db:reset": "turbo db:reset",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up --build",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker build -t phase-platform .",
+    "docker:run": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "docker:start": "scripts\\start-docker.bat",
+    "setup": "./scripts/setup.sh",
+    "reset:dev": "./scripts/reset-dev.sh",
+    "backup:db": "./scripts/backup-db.sh",
+    "health-check": "scripts\\health-check.bat",
+    "shadcn": "cd packages/ui && pnpm dlx shadcn@latest add",
+    "update:deps": "pnpm -r update --latest",
+    "update:interactive": "pnpm -r update --interactive",
+    "update:check": "pnpm -r outdated"
   },
   "devDependencies": {
-    "@turbo/gen": "^1.10.12",
-    "eslint": "^8.48.0",
-    "prettier": "^3.0.3",
-    "turbo": "^1.10.12",
-    "typescript": "^5.2.2"
+    "@prisma/client": "^5.22.0",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.3.3",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-tailwindcss": "^3.18.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prisma": "^5.22.0",
+    "turbo": "^2.5.3",
+    "typescript": "^5.8.3"
   },
-  "packageManager": "pnpm@8.15.0",
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "keywords": [
-    "enterprise",
-    "sdlc",
-    "management",
-    "platform"
-  ],
-  "author": "Phase",
-  "license": "ISC"
-
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^19.1.6",
+      "@types/react-dom": "^19.1.5",
+      "react": "^19.1.0",
+      "react-dom": "^19.1.0",
+      "next": "^15.3.3",
+      "@prisma/client": "^5.22.0",
+      "prisma": "^5.22.0",
+      "tailwindcss": "^3.4.17",
+      "eslint": "^8.57.1",
+      "typescript": "^5.8.3",
+      "lucide-react": "^0.323.0",
+      "bcryptjs": "^2.4.3",
+      "@types/bcryptjs": "^2.4.6",
+      "uuid": "^9.0.1",
+      "@types/uuid": "^9.0.8",
+      "nodemailer": "^6.10.1",
+      "@trpc/server": "^10.45.2",
+      "@testing-library/react": "^14.2.1",
+      "framer-motion": "^10.18.0",
+      "react-query": "^3.39.3",
+      "date-fns": "^2.30.0",
+      "@hookform/resolvers": "^3.3.4",
+      "next-themes": "^0.2.1"
+    }
+  }
 }

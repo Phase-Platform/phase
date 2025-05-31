@@ -1,0 +1,202 @@
+# Phase Platform - Production Docker Compose
+
+services:
+  # Main Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${APP_NAME:-phase-platform}
+    restart: unless-stopped
+    ports:
+      - '${CONTAINER_PORT:-3000}:3000'
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://redis:6379
+      - NEXTAUTH_URL=${APP_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - S3_PUBLIC_URL=${S3_PUBLIC_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - phase-network
+    volumes:
+      - ${UPLOAD_DIR:-./uploads}:/app/uploads
+    healthcheck:
+      test: ['CMD', 'curl', '-f', '${HEALTH_CHECK_PATH:-/api/health}']
+      interval: ${HEALTH_CHECK_INTERVAL:-30s}
+      timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
+      retries: ${HEALTH_CHECK_RETRIES:-3}
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILES:-3}
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.phase.rule=Host(`${APP_URL})'
+      - 'traefik.http.routers.phase.tls=true'
+      - 'traefik.http.routers.phase.tls.certresolver=letsencrypt'
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ${POSTGRES_CONTAINER_NAME:-phase-platform-postgres}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: ${POSTGRES_INITDB_ARGS:-'--encoding=UTF-8 --locale=en_US.UTF-8'}
+      LANG: ${LANG:-en_US.UTF-8}
+      LC_ALL: ${LC_ALL:-en_US.UTF-8}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    networks:
+      - phase-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: ${POSTGRES_HEALTH_INTERVAL:-10s}
+      timeout: ${POSTGRES_HEALTH_TIMEOUT:-5s}
+      retries: ${POSTGRES_HEALTH_RETRIES:-5}
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILES:-3}
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ${REDIS_CONTAINER_NAME:-phase-platform-redis}
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    networks:
+      - phase-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
+      interval: ${REDIS_HEALTH_INTERVAL:-10s}
+      timeout: ${REDIS_HEALTH_TIMEOUT:-3s}
+      retries: ${REDIS_HEALTH_RETRIES:-5}
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILES:-3}
+
+  # MinIO (S3-compatible object storage)
+  minio:
+    image: minio/minio:latest
+    container_name: ${MINIO_CONTAINER_NAME:-phase-platform-minio}
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
+      MINIO_REGION: ${AWS_REGION}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_REDIRECT_URL:-https://${APP_URL}/minio}
+    command: server /data --console-address ":9001"
+    ports:
+      - '${MINIO_API_PORT:-9000}:9000' # API
+      - '${MINIO_CONSOLE_PORT:-9001}:9001' # Console
+    volumes:
+      - minio_data:/data
+    networks:
+      - phase-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: ${MINIO_HEALTH_INTERVAL:-30s}
+      timeout: ${MINIO_HEALTH_TIMEOUT:-20s}
+      retries: ${MINIO_HEALTH_RETRIES:-3}
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILES:-3}
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: ${NGINX_CONTAINER_NAME:-phase-platform-nginx}
+    restart: unless-stopped
+    ports:
+      - '${NGINX_HTTP_PORT:-80}:80'
+      - '${NGINX_HTTPS_PORT:-443}:443'
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ${SSL_CERT_PATH:-./ssl}:/etc/ssl/certs:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - phase-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost/health']
+      interval: ${NGINX_HEALTH_INTERVAL:-30s}
+      timeout: ${NGINX_HEALTH_TIMEOUT:-10s}
+      retries: ${NGINX_HEALTH_RETRIES:-3}
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILES:-3}
+
+  # Database Backup Service
+  backup:
+    image: postgres:15-alpine
+    container_name: ${BACKUP_CONTAINER_NAME:-phase-platform-backup}
+    restart: 'no'
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${BACKUP_DIR:-./backups}:/backups
+      - ./scripts/backup-db.sh:/backup-db.sh:ro
+    command: |
+      sh -c "
+        echo '${BACKUP_SCHEDULE:-0 2 * * *} /backup-db.sh' | crontab -
+        crond -f
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phase-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILES:-3}
+
+networks:
+  phase-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${DOCKER_SUBNET:-172.20.0.0/16}
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  nginx_logs:
+    driver: local
+  minio_data:
+    driver: local

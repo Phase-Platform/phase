@@ -1,0 +1,29 @@
+{
+  "name": "@phase-platform/tools-eslint",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ESLint configuration for Phase Platform",
+  "main": "base.js",
+  "files": [
+    "base.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.3.3",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-tailwindcss": "^3.18.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

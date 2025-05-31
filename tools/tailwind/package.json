@@ -1,0 +1,25 @@
+{
+  "name": "@phase-platform/tools-tailwind",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tailwind CSS configuration for Phase Platform",
+  "main": "base.js",
+  "files": [
+    "base.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^3.4.17",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "@tailwindcss/aspect-ratio": "^0.4.2"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

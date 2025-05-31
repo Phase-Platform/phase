@@ -1,0 +1,50 @@
+{
+  "name": "@phase/database",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Database layer with Prisma ORM for Phase Platform",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf .turbo node_modules dist",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:reset": "prisma migrate reset",
+    "db:push": "prisma db push",
+    "db:seed": "tsx src/seed.ts",
+    "db:studio": "prisma studio",
+    "db:format": "prisma format"
+  },
+  "dependencies": {
+    "@phase/types": "workspace:*",
+    "bcryptjs": "^2.4.3",
+    "pg": "^8.11.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.11.19",
+    "@types/pg": "^8.11.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.0.0",
+    "rimraf": "^5.0.0"
+  },
+  "prisma": {
+    "schema": "./prisma/schema.prisma"
+  }
+}

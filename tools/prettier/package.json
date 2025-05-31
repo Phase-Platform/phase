@@ -1,0 +1,24 @@
+{
+  "name": "@phase-platform/tools-prettier",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Prettier configuration for Phase Platform",
+  "main": "base.js",
+  "files": [
+    "base.js",
+    "ignore.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}
