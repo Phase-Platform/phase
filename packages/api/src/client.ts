@@ -1,4 +1,5 @@
-import { ApiClientConfig } from './types';
+import { ApiClientConfig } from ".";
+
 
 export class ApiClient {
   private config: ApiClientConfig;
