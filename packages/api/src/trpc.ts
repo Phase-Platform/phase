@@ -69,6 +69,7 @@ const organizationRouter = t.router({
     .input(
       z.object({
         name: z.string(),
+        slug: z.string(),
         description: z.string().optional(),
         logo: z.string().optional(),
         website: z.string().optional(),
@@ -113,6 +114,8 @@ const projectRouter = t.router({
     .input(
       z.object({
         name: z.string(),
+        slug: z.string(),
+        ownerId: z.string(),
         description: z.string().optional(),
         status: z.nativeEnum(ProjectStatus).optional(),
         priority: z.nativeEnum(Priority).optional(),
@@ -122,7 +125,7 @@ const projectRouter = t.router({
         repository: z.string().optional(),
         settings: z.any().optional(),
         metadata: z.any().optional(),
-        organizationId: z.string().optional(),
+        organizationId: z.string(),
       })
     )
     .mutation(({ input }) => prisma.project.create({ data: input })),
@@ -168,7 +171,7 @@ const projectMemberRouter = t.router({
       z.object({
         projectId: z.string(),
         userId: z.string(),
-        role: z.nativeEnum(ProjectRole).optional(),
+        role: z.nativeEnum(ProjectRole),
         permissions: z.any().optional(),
       })
     )
@@ -186,7 +189,10 @@ const projectMemberRouter = t.router({
       })
     )
     .mutation(({ input }) =>
-      prisma.projectMember.update({ where: { id: input.id }, data: input.data })
+      prisma.projectMember.update({
+        where: { id: input.id },
+        data: input.data,
+      })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))

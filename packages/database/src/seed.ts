@@ -85,6 +85,7 @@ async function main() {
   const organization = await prisma.organization.create({
     data: {
       name: 'Phase Platform',
+      slug: 'phase-platform',
       description: 'A comprehensive SDLC management system',
       website: 'https://phaseplatform.com',
       settings: {
@@ -102,8 +103,11 @@ async function main() {
   const project = await prisma.project.create({
     data: {
       name: 'Phase Platform Development',
+      slug: 'phase-platform-dev',
       description: 'Main development project for Phase Platform',
       organizationId: organization.id,
+      status: 'ACTIVE',
+      ownerId: superAdmin.id,
       settings: {
         sprintDuration: 2,
         storyPointScale: 'fibonacci',

@@ -18,17 +18,14 @@
     "strictNullChecks": true,
     "target": "ES2020",
     "module": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "jsx": "react-jsx",
+    "lib": ["ESNext"],
     "allowJs": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
-    },
-    "types": ["react", "react-dom", "node"]
+      "@/*": ["./src/*"]
+    }
   },
   "exclude": ["node_modules", "dist", ".turbo", "coverage"]
 }

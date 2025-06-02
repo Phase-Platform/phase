@@ -12,7 +12,7 @@ export interface DatabaseConnection {
   disconnect(): Promise<void>;
   query<T>(sql: string, params?: any[]): Promise<T[]>;
   transaction<T>(
-    callback: (connection: DatabaseConnection) => Promise<T>
+    callback: (connection: DatabaseConnection) => Promise<T>,
   ): Promise<T>;
 }
 

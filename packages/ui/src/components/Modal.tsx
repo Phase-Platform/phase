@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -16,13 +16,10 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center'>
-      <div
-        className='fixed inset-0 bg-black bg-opacity-50'
-        onClick={onClose}
-      />
-      <div className='relative bg-white rounded-lg shadow-xl p-6 w-full max-w-md'>
-        {title && <h2 className='text-xl font-semibold mb-4'>{title}</h2>}
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onClose} />
+      <div className="relative bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
         {children}
       </div>
     </div>

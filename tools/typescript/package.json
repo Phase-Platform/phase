@@ -1,24 +1,18 @@
 {
   "name": "@phase-platform/tools-typescript",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "TypeScript configuration for Phase Platform",
-  "main": "base.json",
-  "files": [
-    "base.json",
-    "next.json",
-    "library.json",
-    "node.json"
-  ],
+  "main": "./tsconfig.json",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "typescript": "^5.8.3",
-    "@types/node": "^20.11.19"
+    "typescript": "^5.8.3"
   },
   "publishConfig": {
     "access": "restricted"

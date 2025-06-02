@@ -1,5 +1,5 @@
 import { Pool, PoolClient } from 'pg';
-import { DatabaseConfig, DatabaseConnection } from '@phase/types';
+import { DatabaseConfig, DatabaseConnection } from '@phase-platform/types';
 import { env } from './env';
 
 export class DatabaseClient implements DatabaseConnection {

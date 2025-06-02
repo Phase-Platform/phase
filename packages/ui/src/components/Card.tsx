@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -6,7 +6,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Card: React.FC<CardProps> = ({
   children,
-  className = '',
+  className = "",
   ...props
 }) => {
   return (

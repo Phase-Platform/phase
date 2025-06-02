@@ -1,29 +1,33 @@
 {
   "name": "@phase-platform/tools-eslint",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "ESLint configuration for Phase Platform",
-  "main": "base.js",
-  "files": [
-    "base.js"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "main": "index.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": "./index.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+  },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.33.0",
     "@typescript-eslint/parser": "^8.33.0",
     "eslint": "^8.57.1",
-    "eslint-config-next": "^15.3.3",
+    "eslint-config-next": "^14.1.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-tailwindcss": "^3.18.0"
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "eslint-plugin-simple-import-sort": "^12.0.0"
   },
-  "publishConfig": {
-    "access": "restricted"
+  "devDependencies": {
+    "@types/eslint": "^8.56.6",
+    "typescript": "^5.8.3"
   }
 }

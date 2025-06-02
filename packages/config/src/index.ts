@@ -1,5 +1,13 @@
-import { z } from 'zod';
-import { DatabaseConfig } from '@phase/types';
+import { z } from "zod";
+
+// Define DatabaseConfig locally instead of importing from '@phase/types'
+export type DatabaseConfig = {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+};
 
 export const databaseConfigSchema = z.object({
   host: z.string(),
@@ -14,9 +22,9 @@ export const validateDatabaseConfig = (config: unknown): DatabaseConfig => {
 };
 
 export const getEnvironment = () => {
-  return process.env.NODE_ENV || 'development';
+  return process.env.NODE_ENV || "development";
 };
 
-export const isDevelopment = () => getEnvironment() === 'development';
-export const isProduction = () => getEnvironment() === 'production';
-export const isTest = () => getEnvironment() === 'test';
+export const isDevelopment = () => getEnvironment() === "development";
+export const isProduction = () => getEnvironment() === "production";
+export const isTest = () => getEnvironment() === "test";

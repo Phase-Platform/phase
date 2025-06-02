@@ -23,4 +23,14 @@ export interface DatabaseConfig {
   username: string;
   password: string;
   database: string;
+  url?: string;
+}
+
+export interface DatabaseConnection {
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  query<T>(sql: string, params?: any[]): Promise<T[]>;
+  transaction<T>(
+    callback: (connection: DatabaseConnection) => Promise<T>
+  ): Promise<T>;
 }

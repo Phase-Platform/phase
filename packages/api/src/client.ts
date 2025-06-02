@@ -1,5 +1,4 @@
-import { ApiClientConfig } from ".";
-
+import { ApiClientConfig } from '.';
 
 export class ApiClient {
   private config: ApiClientConfig;
@@ -25,7 +24,8 @@ export class ApiClient {
       throw new Error(`API request failed: ${response.statusText}`);
     }
 
-    return response.json();
+    const data = (await response.json()) as T;
+    return data;
   }
 
   async get<T>(endpoint: string, options: RequestInit = {}): Promise<T> {

@@ -1,10 +1,14 @@
-const baseConfig = require('../../tools/tailwind/base.js');
+import baseConfig from '../../tools/tailwind/base.js';
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   ...baseConfig,
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
-    '../../packages/ui/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
+  darkMode: 'media',
 };

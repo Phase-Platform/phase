@@ -8,7 +8,7 @@ export const isPassword = (password: string): boolean => {
 };
 
 export const isRequired = (value: any): boolean => {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value.trim().length > 0;
   }
   return value !== undefined && value !== null;

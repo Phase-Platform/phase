@@ -28,6 +28,9 @@
     "lint": {
       "outputs": []
     },
+    "lint:fix": {
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "persistent": true
