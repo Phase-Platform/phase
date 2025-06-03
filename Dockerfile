@@ -3,7 +3,7 @@
 # ====================
 # Dependencies Stage
 # ====================
-FROM node:18-alpine AS deps
+FROM node:18.17-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -15,8 +15,11 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/*/package.json ./packages/*/
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile --prefer-offline
+# Debug: List files to verify copying
+RUN ls -la
+
+# Install dependencies with verbose output
+RUN pnpm install --frozen-lockfile --prefer-offline --verbose
 
 # ====================
 # Builder Stage

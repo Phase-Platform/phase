@@ -25,11 +25,11 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     outputs:
       image-digest: ${{ steps.build.outputs.digest }}
       image-tag: ${{ steps.meta.outputs.tags }}
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,7 +73,7 @@ jobs:
     needs: build-and-push
     environment: staging
     if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -98,8 +98,26 @@ jobs:
         with:
           status: ${{ job.status }}
           channel: '#deployments'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
           fields: repo,message,commit,author,action,eventName,ref,workflow
+          custom_payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ job.status == 'success' && 'good' || 'danger' }}",
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "*Deployment Status:* ${{ job.status }}\n*Environment:* Staging"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   deploy-production:
     name: Deploy to Production
@@ -107,7 +125,7 @@ jobs:
     needs: [build-and-push, deploy-staging]
     environment: production
     if: github.event.inputs.environment == 'production'
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -132,15 +150,33 @@ jobs:
         with:
           status: ${{ job.status }}
           channel: '#deployments'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
           fields: repo,message,commit,author,action,eventName,ref,workflow
+          custom_payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ job.status == 'success' && 'good' || 'danger' }}",
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "*Deployment Status:* ${{ job.status }}\n*Environment:* Production"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   rollback:
     name: Rollback
     runs-on: ubuntu-latest
     if: failure()
     needs: [deploy-staging, deploy-production]
-    
+
     steps:
       - name: Rollback deployment
         run: |
@@ -153,6 +189,23 @@ jobs:
         with:
           status: 'warning'
           channel: '#deployments'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
           fields: repo,message,commit,author,action,eventName,ref,workflow
-          text: 'Deployment rolled back due to failures'
+          custom_payload: |
+            {
+              "attachments": [
+                {
+                  "color": "warning",
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "*Deployment Status:* Rolled Back\n*Reason:* Deployment failures"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
