@@ -2,7 +2,7 @@
   "extends": "../../tools/typescript/node.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "../..",
+    "rootDir": ".",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
@@ -31,7 +31,8 @@
     "eslint.config.js",
     "tsup.config.ts",
     "tailwind.config.js",
-    "../../tools/**/*"
+    "*.config.js",
+    "*.config.ts"
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

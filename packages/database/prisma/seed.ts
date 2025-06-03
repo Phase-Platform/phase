@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import * as seeds from "./seeds";
+import { PrismaClient } from '@prisma/client';
+import * as seeds from './seeds';
 
 async function main() {
   const prisma = new PrismaClient();
@@ -28,9 +28,9 @@ async function main() {
     await seeds.seedCustomFields(prisma);
     await seeds.seedAutomationRules(prisma);
 
-    console.log("Seeding completed successfully");
+    console.log('Seeding completed successfully');
   } catch (error) {
-    console.error("Error seeding database:", error);
+    console.error('Error seeding database:', error);
     process.exit(1);
   } finally {
     await prisma.$disconnect();

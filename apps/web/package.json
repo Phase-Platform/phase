@@ -7,8 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --cache --cache-location .cache/.eslintcache --ignore-pattern '.next/**'",
+    "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache --ignore-pattern '.next/**'",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "type-check": "tsc --noEmit"
   },

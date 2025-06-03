@@ -1,5 +1,5 @@
 {
-  "extends": "../../tools/typescript/node.json",
+  "extends": "../typescript/node.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": ".",
@@ -13,6 +13,13 @@
     "composite": true,
     "noEmit": false
   },
-  "include": ["src/**/*", "eslint.config.js", "*.config.js", "*.config.ts"],
+  "include": [
+    "src/**/*",
+    "eslint.config.js",
+    "*.config.js",
+    "*.config.ts",
+    "base.js",
+    "ignore.js"
+  ],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

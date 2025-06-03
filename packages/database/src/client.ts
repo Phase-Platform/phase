@@ -26,7 +26,7 @@ export class DatabaseClient implements DatabaseConnection {
     this.client = await this.pool.connect();
   }
 
-  async disconnect(): Promise<void> {
+  async close(): Promise<void> {
     if (this.client) {
       this.client.release();
       this.client = null;
@@ -34,7 +34,7 @@ export class DatabaseClient implements DatabaseConnection {
     await this.pool.end();
   }
 
-  async query<T>(sql: string, params?: any[]): Promise<T[]> {
+  async query<T>(sql: string, params?: unknown[]): Promise<T[]> {
     const client = this.client || (await this.pool.connect());
     try {
       const result = await client.query(sql, params);

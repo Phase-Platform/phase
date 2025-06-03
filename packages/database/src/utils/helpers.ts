@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from "@prisma/client";
 
 export const helpers = {
   // Add your database helper functions here
@@ -7,14 +7,14 @@ export const helpers = {
     callback: (
       tx: Omit<
         PrismaClient,
-        | '$connect'
-        | '$disconnect'
-        | '$on'
-        | '$transaction'
-        | '$use'
-        | '$extends'
-      >
-    ) => Promise<T>
+        | "$connect"
+        | "$disconnect"
+        | "$on"
+        | "$transaction"
+        | "$use"
+        | "$extends"
+      >,
+    ) => Promise<T>,
   ): Promise<T> {
     return prisma.$transaction(async (tx) => {
       return callback(tx);
@@ -23,7 +23,7 @@ export const helpers = {
 
   async handlePrismaError(error: any) {
     // Add your error handling logic here
-    console.error('Database error:', error);
+    console.error("Database error:", error);
     throw error;
   },
 };

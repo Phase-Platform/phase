@@ -1,18 +1,53 @@
-import path from 'path';
+import eslint from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
+import prettierConfig from 'eslint-config-prettier';
 import { fileURLToPath } from 'url';
-
-import baseConfig from "@phase-platform/tools-eslint/src/index.js";
+import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default [
-  ...baseConfig,
+/** @type {import('eslint').Config[]} */
+const config = [
+  eslint.configs.recommended,
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['**/*.{ts,tsx}'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/.turbo/**',
+    ],
     languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      parser: tsparser,
       parserOptions: {
-        project: path.resolve(__dirname, './tsconfig.json'),
+        ecmaFeatures: {
+          jsx: true,
+        },
+        project: [path.resolve(__dirname, 'tsconfig.json')],
+        tsconfigRootDir: __dirname,
+        warnOnUnsupportedTypeScriptVersion: false,
+      },
+      globals: {
+        process: 'readonly',
+        __dirname: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        console: 'readonly',
       },
     },
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
+      // ... other rules ...
+    },
   },
+  prettierConfig,
 ];
+
+export default config;

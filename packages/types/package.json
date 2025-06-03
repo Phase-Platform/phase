@@ -31,6 +31,7 @@
     "@phase-platform/tools-eslint": "workspace:*",
     "@phase-platform/tools-typescript": "workspace:*",
     "rimraf": "^5.0.5",
+    "tsup": "^8.0.2",
     "typescript": "^5.8.3"
   }
 }

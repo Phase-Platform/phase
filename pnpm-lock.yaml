@@ -284,6 +284,9 @@ importers:
       rimraf:
         specifier: ^5.0.5
         version: 5.0.10
+      tsup:
+        specifier: ^8.0.2
+        version: 8.5.0(jiti@1.21.7)(postcss@8.5.4)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -400,15 +403,27 @@ importers:
   tools/prettier:
     dependencies:
       prettier:
-        specifier: ^3.5.3
+        specifier: ^3.2.5
         version: 3.5.3
-      prettier-plugin-tailwindcss:
-        specifier: ^0.6.11
-        version: 0.6.12(prettier@3.5.3)
     devDependencies:
-      '@phase-platform/tools-eslint':
-        specifier: workspace:*
-        version: link:../eslint
+      '@eslint/js':
+        specifier: ^8.57.0
+        version: 8.57.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.0.0
+        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
+      '@typescript-eslint/parser':
+        specifier: ^7.0.0
+        version: 7.18.0(eslint@8.57.1)(typescript@5.8.3)
+      eslint:
+        specifier: ^8.57.1
+        version: 8.57.1
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.1)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
   tools/tailwind:
     dependencies:
@@ -425,9 +440,24 @@ importers:
         specifier: ^3.4.17
         version: 3.4.17(ts-node@10.9.2(@types/node@20.17.57)(typescript@5.8.3))
     devDependencies:
-      '@phase-platform/tools-eslint':
-        specifier: workspace:*
-        version: link:../eslint
+      '@eslint/js':
+        specifier: ^8.57.0
+        version: 8.57.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.0.0
+        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
+      '@typescript-eslint/parser':
+        specifier: ^7.0.0
+        version: 7.18.0(eslint@8.57.1)(typescript@5.8.3)
+      eslint:
+        specifier: ^8.57.1
+        version: 8.57.1
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.1)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
   tools/typescript:
     dependencies:
@@ -435,9 +465,21 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
     devDependencies:
-      '@phase-platform/tools-eslint':
-        specifier: workspace:*
-        version: link:../eslint
+      '@eslint/js':
+        specifier: ^8.57.0
+        version: 8.57.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.0.0
+        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
+      '@typescript-eslint/parser':
+        specifier: ^7.0.0
+        version: 7.18.0(eslint@8.57.1)(typescript@5.8.3)
+      eslint:
+        specifier: ^8.57.1
+        version: 8.57.1
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.1)
 
 packages:
 

@@ -1,61 +1,62 @@
-module.exports = [
+/** @type {string[]} */
+export default [
   // Dependencies
-  "node_modules/",
-  ".pnp",
-  ".pnp.js",
+  'node_modules/',
+  '.pnp',
+  '.pnp.js',
 
   // Production builds
-  ".next/",
-  "out/",
-  "build/",
-  "dist/",
+  '.next/',
+  'out/',
+  'build/',
+  'dist/',
 
   // Logs
-  "*.log",
+  '*.log',
 
   // Database files
-  "*.db",
-  "*.sqlite",
-  "*.sqlite3",
+  '*.db',
+  '*.sqlite',
+  '*.sqlite3',
 
   // Environment files
-  ".env*",
+  '.env*',
 
   // Coverage reports
-  "coverage/",
+  'coverage/',
 
   // IDE files
-  ".vscode/",
-  ".idea/",
+  '.vscode/',
+  '.idea/',
 
   // OS files
-  ".DS_Store",
-  "Thumbs.db",
+  '.DS_Store',
+  'Thumbs.db',
 
   // Package files
-  "*.tgz",
-  "*.tar.gz",
+  '*.tgz',
+  '*.tar.gz',
 
   // Prisma generated files
-  "**/generated/",
+  '**/generated/',
 
   // Auto-generated files
-  "**/*.generated.*",
-  "**/prisma/migrations/",
+  '**/*.generated.*',
+  '**/prisma/migrations/',
 
   // Documentation builds
-  "docs/build/",
+  'docs/build/',
 
   // Temporary files
-  "tmp/",
-  "temp/",
+  'tmp/',
+  'temp/',
 
   // Cache directories
-  ".cache/",
-  ".turbo/",
+  '.cache/',
+  '.turbo/',
 
   // Lock files (formatted differently)
-  "pnpm-lock.yaml",
-  "yarn.lock",
-  "package-lock.json",
+  'pnpm-lock.yaml',
+  'yarn.lock',
+  'package-lock.json',
 ];

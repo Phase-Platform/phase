@@ -1,14 +1,15 @@
-import eslint from '@eslint/js';
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsparser from '@typescript-eslint/parser';
+import prettierConfig from 'eslint-config-prettier';
+import importPlugin from 'eslint-plugin-import';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
-import importPlugin from 'eslint-plugin-import';
-import unusedImportsPlugin from 'eslint-plugin-unused-imports';
 import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
+import unusedImportsPlugin from 'eslint-plugin-unused-imports';
+
+import eslint from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
-import prettierConfig from 'eslint-config-prettier';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
 
 export default [
   eslint.configs.recommended,
@@ -22,6 +23,9 @@ export default [
         ecmaFeatures: {
           jsx: true,
         },
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: process.cwd(),
+        warnOnUnsupportedTypeScriptVersion: false,
       },
       globals: {
         console: 'readonly',
@@ -59,13 +63,22 @@ export default [
     },
     rules: {
       // TypeScript specific rules
-      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'all',
+          argsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'warn',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off', // Disabled to avoid type-aware rules
-      '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/prefer-optional-chain': 'off',
       '@typescript-eslint/consistent-type-imports': [
         'error',
         { prefer: 'type-imports', disallowTypeAnnotations: false },
@@ -90,12 +103,12 @@ export default [
       'react-hooks/exhaustive-deps': 'warn',
 
       // Import/Export rules (relaxed for monorepo)
-      'import/no-unresolved': 'off', // Disabled due to monorepo complexity
+      'import/no-unresolved': 'off',
       'import/named': 'error',
       'import/default': 'error',
       'import/no-absolute-path': 'error',
       'import/no-self-import': 'error',
-      'import/no-cycle': 'warn', // Changed to warn
+      'import/no-cycle': 'warn',
       'import/no-useless-path-segments': 'error',
       'import/no-relative-packages': 'error',
       'import/first': 'error',
@@ -144,7 +157,7 @@ export default [
       'arrow-body-style': ['error', 'as-needed'],
       'no-duplicate-imports': 'error',
       'no-useless-rename': 'error',
-      'no-undef': 'off', // Disabled as TypeScript handles this
+      'no-undef': 'off',
 
       // Accessibility
       'jsx-a11y/alt-text': 'error',
@@ -161,7 +174,13 @@ export default [
   },
   {
     // Config files
-    files: ['*.config.js', '*.config.ts', '.eslintrc.js', 'eslint.config.js'],
+    files: [
+      '*.config.js',
+      '*.config.ts',
+      '.eslintrc.js',
+      'eslint.config.js',
+      'base.js',
+    ],
     languageOptions: {
       globals: {
         module: 'readonly',
@@ -178,6 +197,13 @@ export default [
     },
   },
   {
+    // Interface files
+    files: ['**/*.d.ts', '**/types/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
+  {
     // Test files
     files: ['**/__tests__/**/*', '**/*.test.*', '**/*.spec.*'],
     rules: {
@@ -188,12 +214,28 @@ export default [
   {
     // Ignore dist and build files
     ignores: [
-      'dist/**/*',
-      'build/**/*',
-      '.next/**/*',
-      'node_modules/**/*',
+      '**/dist/**/*',
+      '**/build/**/*',
+      '**/.next/**/*',
+      '**/node_modules/**/*',
       '**/*.d.ts',
       '**/*.js.map',
+      '**/.turbo/**/*',
+      '**/.cache/**/*',
+      '**/out/**/*',
+      '**/.pnpm-store/**/*',
+      '**/coverage/**/*',
+      '**/.eslintcache',
+      '**/.DS_Store',
+      '**/Thumbs.db',
+      '**/.vscode/**/*',
+      '**/.idea/**/*',
+      '**/*.swp',
+      '**/*.swo',
+      '**/*.log',
+      '**/npm-debug.log*',
+      '**/pnpm-debug.log*',
+      '**/.env*',
     ],
   },
   prettierConfig,

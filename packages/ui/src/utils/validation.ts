@@ -5,7 +5,9 @@ export const isEmail = (email: string): boolean => {
 
 export const isPassword = (password: string): boolean => password.length >= 8;
 
-export const isRequired = (value: any): boolean => {
+export const isRequired = (
+  value: string | number | boolean | null | undefined,
+): boolean => {
   if (typeof value === "string") {
     return value.trim().length > 0;
   }

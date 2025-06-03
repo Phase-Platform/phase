@@ -1,4 +1,4 @@
-import type { ApiClientConfig } from '.';
+import type { ApiClientConfig } from ".";
 
 export class ApiClient {
   private config: ApiClientConfig;
@@ -10,7 +10,7 @@ export class ApiClient {
   async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.config.baseUrl}${endpoint}`;
     const headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...this.config.headers,
       ...options.headers,
     };
@@ -29,17 +29,17 @@ export class ApiClient {
   }
 
   async get<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'GET' });
+    return this.request<T>(endpoint, { ...options, method: "GET" });
   }
 
   async post<T>(
     endpoint: string,
     data: unknown,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
@@ -47,16 +47,16 @@ export class ApiClient {
   async put<T>(
     endpoint: string,
     data: unknown,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   async delete<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'DELETE' });
+    return this.request<T>(endpoint, { ...options, method: "DELETE" });
   }
 }

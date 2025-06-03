@@ -3,7 +3,8 @@ export const formatDate = (date: Date | string): string => {
   return d.toLocaleDateString();
 };
 
-export const formatCurrency = (amount: number): string => new Intl.NumberFormat("en-US", {
+export const formatCurrency = (amount: number): string =>
+  new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(amount);

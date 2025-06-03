@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export * from './api';
 export * from './common';
-export * from './database';
 
 // Common types
 export interface BaseEntity {
@@ -27,10 +27,7 @@ export interface DatabaseConfig {
 }
 
 export interface DatabaseConnection {
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
-  query<T>(sql: string, params?: any[]): Promise<T[]>;
-  transaction<T>(
-    callback: (connection: DatabaseConnection) => Promise<T>
-  ): Promise<T>;
+  query: <T>(sql: string, params?: unknown[]) => Promise<T[]>;
+  connect: () => Promise<void>;
+  close: () => Promise<void>;
 }

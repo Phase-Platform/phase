@@ -3,11 +3,11 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import prettierConfig from 'eslint-config-prettier';
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
+/** @type {import('eslint').Config[]} */
 const config = [
   eslint.configs.recommended,
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['**/*.{ts,tsx}'],
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
@@ -24,9 +24,14 @@ const config = [
         },
         project: ['./tsconfig.json'],
         tsconfigRootDir: process.cwd(),
+        warnOnUnsupportedTypeScriptVersion: false,
       },
       globals: {
         process: 'readonly',
+        __dirname: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        console: 'readonly',
       },
     },
     plugins: {
@@ -87,6 +92,17 @@ const config = [
   },
   {
     files: ['*.config.js', '*.config.ts', 'eslint.config.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        process: 'readonly',
+        __dirname: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        console: 'readonly',
+      },
+    },
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
       'import/no-default-export': 'off',

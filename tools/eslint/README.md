@@ -51,10 +51,10 @@ If you need to override any rules in a specific workspace, create an `eslint.con
 
 ```javascript
 module.exports = {
-  extends: ['@phase-platform/tools-eslint'],
+  extends: ["@phase-platform/tools-eslint"],
   rules: {
     // Your custom overrides
-    '@typescript-eslint/no-explicit-any': 'error',
+    "@typescript-eslint/no-explicit-any": "error",
   },
 };
 ```

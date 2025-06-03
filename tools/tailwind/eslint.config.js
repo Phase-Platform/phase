@@ -5,6 +5,13 @@ import prettierConfig from 'eslint-config-prettier';
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 const config = [
+  {
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+      },
+    },
+  },
   eslint.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
@@ -24,9 +31,6 @@ const config = [
         },
         project: ['./tsconfig.json'],
         tsconfigRootDir: process.cwd(),
-      },
-      globals: {
-        process: 'readonly',
       },
     },
     plugins: {

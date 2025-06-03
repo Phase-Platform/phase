@@ -5,6 +5,13 @@ export default [
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: process.cwd(),
+        warnOnUnsupportedTypeScriptVersion: false,
+      },
+    },
     rules: {
       // UI specific rules
       'jsx-a11y/click-events-have-key-events': 'warn',
@@ -17,18 +24,7 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
-      'unused-imports/no-unused-vars': [
-        'warn',
-        {
-          vars: 'all',
-          varsIgnorePattern: '^_',
-          args: 'after-used',
-          argsIgnorePattern: '^_',
-          ignoreRestSiblings: true,
-          ignoreArgsIfMatch: /^_/,
-          ignoreVarsIfMatch: /^_/,
-        },
-      ],
+      'unused-imports/no-unused-vars': 'warn',
     },
   },
 ];

@@ -1,4 +1,4 @@
-import { useCallback,useState } from "react";
+import { useCallback, useState } from "react";
 
 export interface FormState<T> {
   values: T;
@@ -6,14 +6,16 @@ export interface FormState<T> {
   touched: Partial<Record<keyof T, boolean>>;
 }
 
-export const useForm = <T extends Record<string, any>>(initialValues: T) => {
+export const useForm = <T extends Record<string, unknown>>(
+  initialValues: T,
+) => {
   const [state, setState] = useState<FormState<T>>({
     values: initialValues,
     errors: {},
     touched: {},
   });
 
-  const setFieldValue = useCallback((field: keyof T, value: any) => {
+  const setFieldValue = useCallback((field: keyof T, value: T[keyof T]) => {
     setState((prev) => ({
       ...prev,
       values: { ...prev.values, [field]: value },
