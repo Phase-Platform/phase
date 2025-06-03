@@ -1,16 +1,17 @@
-import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
+
 import {
+  BugStatus,
+  FeatureStatus,
+  Priority,
   PrismaClient,
-  UserRole,
   ProjectRole,
   ProjectStatus,
-  Priority,
-  FeatureStatus,
-  BugStatus,
-  SprintStatus,
   Severity,
+  SprintStatus,
+  UserRole,
 } from '@prisma/client';
+import { initTRPC } from '@trpc/server';
 
 const prisma = new PrismaClient();
 const t = initTRPC.create();

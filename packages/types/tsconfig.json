@@ -1,15 +1,13 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tools/typescript/node.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "noEmit": false,
-    "module": "CommonJS",
-    "moduleResolution": "node"
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020"],
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
+  "include": ["src/**/*", "eslint.config.js"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -14,5 +14,13 @@
     "noEmit": true,
     "jsx": "preserve"
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "references": [
+    { "path": "./packages/api" },
+    { "path": "./packages/config" },
+    { "path": "./packages/database" },
+    { "path": "./packages/types" },
+    { "path": "./packages/ui" },
+    { "path": "./tools/eslint" }
+  ]
 }

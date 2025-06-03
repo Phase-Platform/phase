@@ -28,14 +28,15 @@
   "packageManager": "pnpm@8.15.6",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "tools/*"
   ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "start": "turbo start",
-    "lint": "turbo lint",
-    "lint:fix": "turbo lint:fix",
+    "lint": "turbo run lint --continue -- --cache --cache-location .cache/.eslintcache",
+    "lint:fix": "turbo run lint --continue -- --fix --cache --cache-location .cache/.eslintcache",
     "clean": "turbo clean && scripts\\clean.bat",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "type-check": "turbo type-check",

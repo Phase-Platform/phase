@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Generated files
+*.d.ts
+!src/**/*.d.ts
+*.js.map
+
+# Cache directories
+.cache/
+.eslintcache
+.turbo/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.production

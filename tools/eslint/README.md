@@ -47,14 +47,14 @@ This ESLint configuration includes:
 
 ## Customization
 
-If you need to override any rules in a specific workspace, create an `.eslintrc.js` file in that workspace:
+If you need to override any rules in a specific workspace, create an `eslint.config.js` file in that workspace:
 
 ```javascript
 module.exports = {
-  extends: ["@phase-platform/tools-eslint"],
+  extends: ['@phase-platform/tools-eslint'],
   rules: {
     // Your custom overrides
-    "@typescript-eslint/no-explicit-any": "error",
+    '@typescript-eslint/no-explicit-any': 'error',
   },
 };
 ```

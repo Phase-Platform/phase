@@ -17,10 +17,10 @@
     }
   },
   "scripts": {
-    "build": "prisma generate && tsc",
+    "build": "pnpm --filter @phase-platform/types build && prisma generate && tsc",
     "dev": "tsc --watch",
     "clean": "npx rimraf .turbo node_modules dist || exit 0",
-    "type-check": "tsc --noEmit",
+    "type-check": "pnpm --filter @phase-platform/types build && tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",

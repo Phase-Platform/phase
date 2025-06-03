@@ -3,9 +3,7 @@ export const isEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
-export const isPassword = (password: string): boolean => {
-  return password.length >= 8;
-};
+export const isPassword = (password: string): boolean => password.length >= 8;
 
 export const isRequired = (value: any): boolean => {
   if (typeof value === "string") {

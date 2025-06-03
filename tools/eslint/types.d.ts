@@ -1,0 +1,11 @@
+declare module '@next/eslint-plugin-next';
+declare module 'eslint-plugin-import';
+declare module 'eslint-plugin-jsx-a11y';
+declare module 'eslint-plugin-react';
+declare module 'eslint-plugin-react-hooks';
+declare module 'eslint-plugin-simple-import-sort';
+declare module 'eslint-plugin-unused-imports';
+declare module 'eslint-config-prettier';
+declare module 'globals';
+declare module 'eslint';
+declare module '@eslint/eslintrc';

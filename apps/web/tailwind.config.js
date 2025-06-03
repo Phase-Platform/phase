@@ -1,4 +1,4 @@
-import baseConfig from '../../tools/tailwind/base.js';
+import baseConfig from "@phase-platform/tools-tailwind/base.js";
 
 /** @type {import('tailwindcss').Config} */
 export default {

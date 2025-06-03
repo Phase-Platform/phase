@@ -8,8 +8,7 @@ export const Card: React.FC<CardProps> = ({
   children,
   className = "",
   ...props
-}) => {
-  return (
+}) => (
     <div
       className={`bg-white rounded-lg shadow-md p-4 ${className}`}
       {...props}
@@ -17,4 +16,3 @@ export const Card: React.FC<CardProps> = ({
       {children}
     </div>
   );
-};

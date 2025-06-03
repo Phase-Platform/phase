@@ -2,32 +2,33 @@
   "name": "@phase-platform/tools-eslint",
   "version": "0.1.0",
   "private": true,
-  "description": "ESLint configuration for Phase Platform",
-  "main": "index.ts",
-  "type": "commonjs",
+  "type": "module",
   "exports": {
-    ".": "./index.ts"
+    "./src/index.js": "./src/index.js",
+    ".": "./src/index.js"
   },
+  "files": [
+    "src"
+  ],
   "scripts": {
-    "build": "tsc",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    "lint": "eslint . --cache --cache-location .cache/.eslintcache"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.33.0",
-    "@typescript-eslint/parser": "^8.33.0",
+    "@eslint/js": "^9.0.0",
+    "@next/eslint-plugin-next": "^14.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.57.1",
-    "eslint-config-next": "^14.1.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-import": "^2.29.1",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-unused-imports": "^3.1.0",
-    "eslint-plugin-simple-import-sort": "^12.0.0"
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "eslint-plugin-unused-imports": "^3.0.0"
   },
-  "devDependencies": {
-    "@types/eslint": "^8.56.6",
-    "typescript": "^5.8.3"
+  "peerDependencies": {
+    "eslint": "^8.57.1",
+    "typescript": "^5.0.0"
   }
 }

@@ -1,7 +1,9 @@
-const baseConfig = require('../../tools/tailwind/base.js');
+import baseConfig from '@phase-platform/tools-tailwind/base.js';
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = /** @type {import('tailwindcss').Config} */ ({
   ...baseConfig,
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
-};
+});
+
+export default config;

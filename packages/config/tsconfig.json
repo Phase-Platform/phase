@@ -2,10 +2,12 @@
   "extends": "../../tools/typescript/node.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "jsx": "react-jsx",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"]
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020"],
+    "types": ["node"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
+  "include": ["src/**/*", "eslint.config.js"],
+  "exclude": ["node_modules", "dist"]
 }
