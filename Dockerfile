@@ -8,7 +8,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install pnpm with specific version
-RUN corepack enable && corepack prepare pnpm@8.15.6 --activate
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
