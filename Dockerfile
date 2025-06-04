@@ -6,8 +6,8 @@ FROM node:18.17-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install pnpm with specific version (matches local 9.6.0)
-RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
+# Install pnpm with specific version (matches local 8.15.6)
+RUN corepack enable && corepack prepare pnpm@8.15.6 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -29,7 +29,7 @@ WORKDIR /app
 # Install pnpm and build dependencies
 RUN apk add --no-cache libc6-compat python3 make g++
 
-RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
+RUN corepack enable && corepack prepare pnpm@8.15.6 --activate
 
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
