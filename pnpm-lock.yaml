@@ -339,6 +339,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.10
         version: 0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.17.57)(typescript@5.8.3)))
+      '@types/node':
+        specifier: ^20.11.19
+        version: 20.17.57
       '@types/react':
         specifier: ^18.2.55
         version: 18.3.23
@@ -351,9 +354,6 @@ importers:
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17(ts-node@10.9.2(@types/node@20.17.57)(typescript@5.8.3))
-      tsup:
-        specifier: ^8.0.2
-        version: 8.5.0(jiti@1.21.7)(postcss@8.5.4)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
