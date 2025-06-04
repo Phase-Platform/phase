@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export * from './api';
-export * from './common';
+export * from "./api";
+export * from "./common";
 
 // Common types
 export interface BaseEntity {

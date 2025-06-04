@@ -9,15 +9,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('eslint').Config[]} */
 const config = [
-  eslint.configs.recommended,
   {
-    files: ['**/*.{ts,tsx}'],
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
       '**/build/**',
       '**/.turbo/**',
+      '**/*.js',
+      '**/*.js.map',
+      '**/*.d.ts',
     ],
+  },
+  eslint.configs.recommended,
+  {
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
@@ -44,7 +49,6 @@ const config = [
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
       'no-unused-vars': 'off',
-      // ... other rules ...
     },
   },
   prettierConfig,

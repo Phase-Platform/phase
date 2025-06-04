@@ -1,6 +1,6 @@
-import { Pool, PoolClient } from 'pg';
-import { DatabaseConfig, DatabaseConnection } from '@phase-platform/types';
-import { env } from './env';
+import { Pool, PoolClient } from "pg";
+import { DatabaseConfig, DatabaseConnection } from "@phase-platform/types";
+import { env } from "./env";
 
 export class DatabaseClient implements DatabaseConnection {
   private pool: Pool;
@@ -47,16 +47,16 @@ export class DatabaseClient implements DatabaseConnection {
   }
 
   async transaction<T>(
-    callback: (connection: DatabaseConnection) => Promise<T>
+    callback: (connection: DatabaseConnection) => Promise<T>,
   ): Promise<T> {
     const client = this.client || (await this.pool.connect());
     try {
-      await client.query('BEGIN');
+      await client.query("BEGIN");
       const result = await callback(this);
-      await client.query('COMMIT');
+      await client.query("COMMIT");
       return result;
     } catch (error) {
-      await client.query('ROLLBACK');
+      await client.query("ROLLBACK");
       throw error;
     } finally {
       if (!this.client) {

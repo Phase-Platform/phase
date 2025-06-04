@@ -24,12 +24,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "target": "ES2020"
   },
   "include": [
     "src/**/*",
     "eslint.config.js",
-    "tsup.config.ts",
     "tailwind.config.js",
     "*.config.js",
     "*.config.ts"
