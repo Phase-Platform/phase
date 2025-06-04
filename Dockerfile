@@ -13,6 +13,7 @@ RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/*/package.json ./packages/*/
+COPY tools/*/package.json ./tools/*/
 
 # Debug: List files to verify copying
 RUN ls -la
@@ -37,6 +38,7 @@ COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 
 # Copy source code
 COPY . .
+COPY tools/*/src ./tools/*/src
 
 # Generate Prisma client
 RUN pnpm db:generate
