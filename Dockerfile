@@ -16,7 +16,8 @@ COPY packages/types/package.json ./packages/types/
 COPY packages/*/package.json ./packages/*/
 
 # Copy source files for types package first
-COPY packages/types ./packages/types
+COPY packages/types/src ./packages/types/src
+COPY packages/types/tsconfig.json ./packages/types/
 
 # Copy remaining source files
 COPY tools ./tools/
@@ -41,10 +42,17 @@ RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=deps /app/packages/types/node_modules ./packages/types/node_modules
 
 # Copy source code
 COPY . .
 COPY tools/*/src ./tools/*/src
+
+# Install dependencies again to ensure all workspace packages are properly linked
+RUN pnpm install --prefer-offline
+
+# Build types package first
+RUN cd packages/types && pnpm build
 
 # Generate Prisma client
 RUN pnpm db:generate
