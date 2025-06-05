@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next telemetry disable",
     "start": "next start",
     "lint": "eslint . --cache --cache-location .cache/.eslintcache --ignore-pattern '.next/**'",
     "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache --ignore-pattern '.next/**'",
