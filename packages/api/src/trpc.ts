@@ -4,16 +4,15 @@ import {
   BugStatus,
   FeatureStatus,
   Priority,
-  PrismaClient,
+  prisma,
   ProjectRole,
   ProjectStatus,
   Severity,
   SprintStatus,
   UserRole,
-} from "@prisma/client";
+} from "@phase-platform/database";
 import { initTRPC } from "@trpc/server";
 
-const prisma = new PrismaClient();
 const t = initTRPC.create();
 
 // User Router (already present)

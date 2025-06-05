@@ -1,28 +1,30 @@
 {
   "name": "@phase-platform/tools-typescript",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "TypeScript configuration for Phase Platform",
-  "main": "./index.js",
   "type": "module",
+  "main": "./index.js",
   "scripts": {
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "typescript": "^5.3.3"
+  "keywords": [
+    "typescript",
+    "phase-platform",
+    "tsconfig",
+    "type-checking"
+  ],
+  "author": "Phase Team",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/node": "^20.11.19",
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21"
   },
   "publishConfig": {
     "access": "restricted"
-  },
-  "devDependencies": {
-    "@eslint/js": "^8.57.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0"
   }
 }

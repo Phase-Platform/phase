@@ -19,7 +19,7 @@
   "scripts": {
     "build": "pnpm --filter @phase-platform/types build && prisma generate && tsc",
     "dev": "tsc --watch",
-    "clean": "npx rimraf .turbo node_modules dist || exit 0",
+    "clean": "rimraf .turbo node_modules dist",
     "type-check": "pnpm --filter @phase-platform/types build && tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -32,19 +32,14 @@
   },
   "dependencies": {
     "@phase-platform/types": "workspace:*",
-    "@prisma/client": "^5.10.2",
     "bcryptjs": "^2.4.3",
     "pg": "^8.11.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20.11.19",
     "@types/pg": "^8.11.0",
-    "prisma": "^5.10.2",
-    "tsx": "^4.7.1",
-    "typescript": "^5.0.0",
-    "rimraf": "^5.0.0"
+    "tsx": "^4.7.1"
   },
   "prisma": {
     "schema": "./prisma/schema.prisma"

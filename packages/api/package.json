@@ -30,17 +30,9 @@
   },
   "dependencies": {
     "@phase-platform/config": "workspace:*",
+    "@phase-platform/database": "workspace:*",
     "@phase-platform/types": "workspace:*",
-    "@prisma/client": "^5.22.0",
-    "@trpc/server": "^10.45.1",
+    "@trpc/server": "^10.45.2",
     "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@phase-platform/tools-eslint": "workspace:*",
-    "@phase-platform/tools-typescript": "workspace:*",
-    "@types/node": "^20.11.19",
-    "prisma": "^5.22.0",
-    "rimraf": "^5.0.5",
-    "typescript": "^5.8.3"
   }
 }

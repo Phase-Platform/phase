@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "rootDir": ".",
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "types": ["node"],
     "declaration": true,

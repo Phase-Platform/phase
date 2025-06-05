@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  experimental: {
-    outputFileTracingRoot: undefined, // Enable file tracing
-  },
-  // Optimize for Docker
+  // Remove standalone output to avoid symlink issues
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
+  // Disable image optimization
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

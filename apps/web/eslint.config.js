@@ -31,6 +31,10 @@ export default [
     plugins: {
       '@next/next': nextPlugin,
     },
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
     settings: {
       next: {
         rootDir: '.',

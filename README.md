@@ -4,7 +4,7 @@
   <h1>🚀 Phase Platform</h1>
   <p><strong>Comprehensive Software Development Lifecycle Management System</strong></p>
   
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
   [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
   [![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
@@ -91,51 +91,48 @@ Phase Platform is built as a monorepo using modern web technologies:
 - **Node.js** >= 18.17.0
 - **pnpm** >= 8.6.0
 - **PostgreSQL** >= 14
-- **Redis** >= 6 (optional)
+- **Redis** >= 6 (optional, for caching/sessions)
+- **Docker** (for containerized development/production)
 
-### Installation
+### 1. Clone the Repository
 
-1. **Clone the repository**
+```bash
+git clone https://github.com/phase-platform/phase-platform.git
+cd phase-platform
+```
 
-   ```bash
-   git clone https://github.com/phase-platform/phase-platform.git
-   cd phase-platform
-   ```
+### 2. Install Dependencies
 
-2. **Install dependencies**
+```bash
+pnpm install
+```
 
-   ```bash
-   pnpm install
-   ```
+### 3. Set Up Environment Variables
 
-3. **Set up environment variables**
+- Copy the example file and edit as needed:
 
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
 
-4. **Set up the database**
+- See `.env.example` for all required variables (DB, Redis, Auth, etc).
 
-   ```bash
-   # Generate Prisma client
-   pnpm db:generate
+### 4. Database Setup
 
-   # Run database migrations
-   pnpm db:migrate
+```bash
+pnpm db:generate   # Generate Prisma client
+pnpm db:migrate    # Run database migrations
+pnpm db:seed       # (Optional) Seed the database
+```
 
-   # Seed the database (optional)
-   pnpm db:seed
-   ```
+### 5. Start the Development Server
 
-5. **Start the development server**
+```bash
+pnpm dev
+```
 
-   ```bash
-   pnpm dev
-   ```
-
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+Visit [http://localhost:3000](http://localhost:3000)
 
 ### Using Docker (Alternative)
 
@@ -191,6 +188,73 @@ phase-platform/
 ├── docker/                   # Docker configuration files
 └── docs/                     # Documentation
 ```
+
+## 🔧 Scripts & Tooling
+
+- **Development:**
+  - `pnpm dev` — Start dev server
+  - `pnpm build` — Build for production
+  - `pnpm start` — Start production server
+- **Code Quality:**
+  - `pnpm lint` — Run ESLint
+  - `pnpm type-check` — TypeScript check
+  - `pnpm format` — Prettier formatting
+  - `pnpm test` — Run tests
+- **Database:**
+  - `pnpm db:generate` — Generate Prisma client
+  - `pnpm db:migrate` — Run migrations
+  - `pnpm db:seed` — Seed database
+  - `pnpm db:reset` — Reset database
+  - `pnpm db:studio` — Prisma Studio
+- **Docker:**
+  - `pnpm docker:build`, `pnpm docker:run`, `pnpm docker:dev`, `pnpm docker:start`, `pnpm docker:stop`
+- **UI Components:**
+  - `pnpm shadcn <component>` — Add shadcn/ui components
+- **Dependency Consistency:**
+  - `pnpm check:versions` — Check for mismatched dependency versions
+  - `pnpm fix:versions` — Fix mismatched dependency versions
+
+---
+
+## 📜 Root Scripts Explained
+
+| Script                    | Description                                                |
+| ------------------------- | ---------------------------------------------------------- |
+| `pnpm dev`                | Start the development server for all apps/packages         |
+| `pnpm build`              | Build all apps and packages for production                 |
+| `pnpm start`              | Start the production server                                |
+| `pnpm lint`               | Run ESLint on all workspaces                               |
+| `pnpm lint:fix`           | Run ESLint and auto-fix issues                             |
+| `pnpm type-check`         | Run TypeScript type checks across the monorepo             |
+| `pnpm format`             | Format codebase using Prettier                             |
+| `pnpm test`               | Run all tests                                              |
+| `pnpm test:watch`         | Run tests in watch mode                                    |
+| `pnpm test:coverage`      | Generate test coverage report                              |
+| `pnpm db:generate`        | Generate Prisma client                                     |
+| `pnpm db:migrate`         | Run database migrations                                    |
+| `pnpm db:migrate:deploy`  | Deploy database migrations                                 |
+| `pnpm db:push`            | Push schema changes to the database                        |
+| `pnpm db:studio`          | Open Prisma Studio                                         |
+| `pnpm db:seed`            | Seed the database with sample data                         |
+| `pnpm db:reset`           | Reset the database                                         |
+| `pnpm docker:build`       | Build the Docker image                                     |
+| `pnpm docker:run`         | Start all services with Docker Compose                     |
+| `pnpm docker:dev`         | Start development environment with Docker                  |
+| `pnpm docker:start`       | Start all Docker containers and services                   |
+| `pnpm docker:stop`        | Stop all Docker containers and services                    |
+| `pnpm clean`              | Clean build artifacts and caches                           |
+| `pnpm setup`              | Run project setup scripts                                  |
+| `pnpm reset:dev`          | Reset development environment                              |
+| `pnpm backup:db`          | Backup the database                                        |
+| `pnpm health-check`       | Run health check scripts                                   |
+| `pnpm shadcn`             | Add shadcn/ui components to the UI package                 |
+| `pnpm update:deps`        | Update all dependencies to their latest versions           |
+| `pnpm update:interactive` | Interactively update dependencies                          |
+| `pnpm update:check`       | Check for outdated dependencies                            |
+| `pnpm check:versions`     | Check for mismatched dependency versions across workspaces |
+| `pnpm fix:versions`       | Fix mismatched dependency versions across workspaces       |
+
+---
 
 ## 🔧 Development
 
@@ -367,26 +431,35 @@ See `.env.example` for all required environment variables.
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions from the community!
 
-### Development Setup
+### How to Contribute
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. **Fork** the repository
+2. **Create a branch**: `git checkout -b feature/your-feature`
+3. **Commit your changes**: `git commit -m 'Add your feature'`
+4. **Push to your fork**: `git push origin feature/your-feature`
+5. **Open a Pull Request**
+
+### Contributor Guidelines
+
+- Follow the code style (ESLint, Prettier, TypeScript)
+- Write clear commit messages
+- Add tests for new features
+- Document your code and update the README/docs as needed
+- Run all checks before submitting (`pnpm lint`, `pnpm type-check`, `pnpm test`)
+
+If you have questions, open an issue or start a discussion!
 
 ## 📝 License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🆘 Support & Community
 
-- **Documentation** - [docs.phaseplatform.com](https://docs.phaseplatform.com)
-- **Issues** - [GitHub Issues](https://github.com/phase-platform/phase-platform/issues)
-- **Discussions** - [GitHub Discussions](https://github.com/phase-platform/phase-platform/discussions)
-- **Email** - support@phaseplatform.com
+- **Issues:** [GitHub Issues](https://github.com/phase-platform/phase-platform/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/phase-platform/phase-platform/discussions)
+- **Email:** support@phaseplatform.com
 
 ## 🏆 Acknowledgments
 

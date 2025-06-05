@@ -16,51 +16,37 @@ COPY apps/web/package.json ./apps/web/
 COPY packages/types/package.json ./packages/types/
 COPY packages/*/package.json ./packages/*/
 
-# Copy source files for types package first
-COPY packages/types/src ./packages/types/src
-COPY packages/types/tsconfig.json ./packages/types/
-
-# Copy remaining source files
-COPY tools ./tools/
-
-# Debug: List files to verify copying
-RUN ls -la
-
-# Install dependencies with verbose output
-RUN pnpm install --prefer-offline --verbose
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # ====================
 # Builder Stage
 # ====================
 FROM node:18-alpine AS builder
 WORKDIR /app
-
-# Install pnpm and build dependencies
 RUN apk add --no-cache libc6-compat python3 make g++
 
-# Use the same PNPM version
 ARG PNPM_VERSION=9.6.0
 RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
-# Copy dependencies
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=deps /app/packages/types/node_modules ./packages/types/node_modules
+# Copy package files and lockfile
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/web/package.json ./apps/web/
+COPY packages/types/package.json ./packages/types/
+COPY packages/*/package.json ./packages/*/
 
 # Copy source code
 COPY . .
-COPY tools/*/src ./tools/*/src
 
-# Install dependencies again to ensure all workspace packages are properly linked
-RUN pnpm install --prefer-offline
-
-# Build types package first
+# Install dependencies (will use cache from deps stage)
+RUN pnpm install --frozen-lockfile
+# Build packages
 RUN cd packages/types && pnpm build
 
-# Generate Prisma client
+# Generate database
 RUN pnpm db:generate
 
-# Build the application
+# Build the web app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN cd apps/web && pnpm build
@@ -71,7 +57,7 @@ RUN cd apps/web && pnpm build
 FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Create non-root user
+# Create user and group
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -83,7 +69,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
-# Copy Prisma files
+# Copy database artifacts
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder --chown=nextjs:nodejs /app/packages/database/prisma ./packages/database/prisma
 
@@ -110,13 +96,13 @@ healthCheck.on("error", (err) => {\n\
 });\n\
 healthCheck.end();' > healthcheck.js && chmod +x healthcheck.js
 
-# Set correct permissions
+# Switch to non-root user
 USER nextjs
 
 # Expose port
 EXPOSE 3000
 
-# Set environment variables
+# Environment variables
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000

@@ -16,7 +16,8 @@
     "*.ts",
     "*.tsx",
     "*.config.js",
-    "*.config.ts"
+    "*.config.ts",
+    "eslint.config.js"
   ],
   "exclude": ["node_modules", ".next", "dist"]
 }

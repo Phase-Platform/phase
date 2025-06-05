@@ -3,27 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "description": "Prettier configuration for Phase Platform",
-  "main": "./index.js",
   "type": "module",
+  "main": "./index.js",
   "scripts": {
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "prettier": "^3.2.5"
+  "keywords": [
+    "prettier",
+    "phase-platform",
+    "formatting",
+    "code-style"
+  ],
+  "author": "Phase Team",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11"
   },
   "publishConfig": {
     "access": "restricted"
-  },
-  "devDependencies": {
-    "@eslint/js": "^8.57.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "typescript": "^5.3.3"
   }
 }

@@ -3,30 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "description": "Tailwind CSS configuration for Phase Platform",
-  "main": "./index.js",
   "type": "module",
+  "main": "./index.js",
   "scripts": {
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
+  "keywords": [
+    "tailwindcss",
+    "phase-platform",
+    "css",
+    "styling"
+  ],
+  "author": "Phase Team",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "tailwindcss": "^3.4.17",
     "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.10",
-    "tailwindcss": "^3.4.1"
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "autoprefixer": "^10.4.21",
+    "postcss-import": "^16.1.0",
+    "postcss-nesting": "^13.0.1"
   },
   "publishConfig": {
     "access": "restricted"
-  },
-  "devDependencies": {
-    "@eslint/js": "^8.57.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "typescript": "^5.3.3"
   }
 }

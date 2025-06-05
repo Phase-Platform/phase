@@ -7,32 +7,18 @@
     "dev": "next dev",
     "build": "next build && next telemetry disable",
     "start": "next start",
-    "lint": "eslint . --cache --cache-location .cache/.eslintcache --ignore-pattern '.next/**'",
-    "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache --ignore-pattern '.next/**'",
+    "lint": "eslint . --cache --cache-location .cache/.eslintcache",
+    "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "^15.2.2",
+    "@phase-platform/api": "workspace:*",
+    "@phase-platform/config": "workspace:*",
+    "@phase-platform/types": "workspace:*",
+    "@phase-platform/ui": "workspace:*",
+    "next": "^15.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@phase-platform/tools-eslint": "workspace:*",
-    "@phase-platform/tools-prettier": "workspace:*",
-    "@phase-platform/tools-tailwind": "workspace:*",
-    "@phase-platform/tools-typescript": "workspace:*",
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/typography": "^0.5.16",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.33.0",
-    "@typescript-eslint/parser": "^8.33.0",
-    "autoprefixer": "^10.4.21",
-    "eslint-config-next": "^14.1.0",
-    "postcss-import": "^16.1.0",
-    "postcss-nesting": "^13.0.1",
-    "tailwindcss": "^3.4.17"
   }
 }
