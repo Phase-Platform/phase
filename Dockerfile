@@ -12,7 +12,13 @@ RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
+COPY packages/types/package.json ./packages/types/
 COPY packages/*/package.json ./packages/*/
+
+# Copy source files for types package first
+COPY packages/types ./packages/types
+
+# Copy remaining source files
 COPY tools ./tools/
 
 # Debug: List files to verify copying
