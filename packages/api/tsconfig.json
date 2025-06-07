@@ -1,26 +1,13 @@
 {
-  "extends": "../../tools/typescript/node.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": ".",
+    "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "types": ["node"],
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
-    "noEmit": false
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "dist"
   },
-  "include": ["src/**/*", "eslint.config.js", "*.config.js", "*.config.ts"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
-  "references": [
-    {
-      "path": "../database"
-    },
-    {
-      "path": "../types"
-    }
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -221,7 +221,7 @@ phase-platform/
 | Script                    | Description                                                |
 | ------------------------- | ---------------------------------------------------------- |
 | `pnpm dev`                | Start the development server for all apps/packages         |
-| `pnpm build`              | Build all apps and packages for production                 |
+| `pnpm build`              | Build all apps and packages for production using Turborepo |
 | `pnpm start`              | Start the production server                                |
 | `pnpm lint`               | Run ESLint on all workspaces                               |
 | `pnpm lint:fix`           | Run ESLint and auto-fix issues                             |
@@ -474,3 +474,264 @@ This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE
 <div align="center">
   <p>Made with ❤️ for developers, by developers</p>
 </div>
+
+## Scripts
+
+### Development Scripts
+
+#### Setup and Environment
+
+```bash
+# Initial setup of the project
+pnpm setup
+
+# Reset development environment
+pnpm reset:dev
+
+# Check system health
+pnpm health-check
+```
+
+#### Development
+
+```bash
+# Start development environment
+pnpm dev
+
+# Build the application
+pnpm build
+
+# Run tests
+pnpm test
+```
+
+### Database Management
+
+```bash
+# Create database backup
+pnpm db:backup
+
+# Restore database from backup
+pnpm db:restore
+
+# Reset database to initial state
+pnpm db:reset
+
+# List available backups
+pnpm db:list
+
+# Clean up old backups (keeps last 5)
+pnpm db:cleanup
+
+# Run database migrations
+pnpm db:migrate
+
+# Seed database
+pnpm db:seed
+
+# Open database management UI
+pnpm db:studio
+```
+
+### Docker Management
+
+```bash
+# Start development containers
+pnpm docker:dev
+
+# Start production containers
+pnpm docker:prod
+
+# Stop containers
+pnpm docker:down
+
+# Build containers
+pnpm docker:build
+
+# Restart containers
+pnpm docker:restart
+
+# Start containers
+pnpm docker:up
+```
+
+### Testing
+
+```bash
+# Run all tests
+pnpm test
+
+# Run unit tests
+pnpm test:unit
+
+# Run integration tests
+pnpm test:integration
+
+# Run end-to-end tests
+pnpm test:e2e
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Generate test coverage report
+pnpm test:coverage
+```
+
+### Code Quality
+
+```bash
+# Run linting
+pnpm lint
+
+# Fix linting issues
+pnpm lint:fix
+
+# Format code
+pnpm format
+
+# Type checking
+pnpm type-check
+```
+
+### Maintenance
+
+```bash
+# Clean build artifacts
+pnpm clean
+
+# Update dependencies
+pnpm update:deps
+
+# Interactive dependency updates
+pnpm update:interactive
+
+# Check for outdated dependencies
+pnpm update:check
+
+# Check for version mismatches
+pnpm check:versions
+
+# Fix version mismatches
+pnpm fix:versions
+```
+
+## Script Details
+
+### Development Environment (`scripts/dev.js`)
+
+- Checks and installs dependencies
+- Verifies environment configuration
+- Starts Docker containers
+- Runs health checks
+- Starts development server
+
+### Build Process (`scripts/build.js`)
+
+- Verifies environment configuration
+- Cleans build artifacts
+- Builds application
+- Builds Docker images
+- Optional test execution
+- Optional database backup
+
+### Database Management (`scripts/db.js`)
+
+- Creates database backups
+- Restores from backups
+- Resets database
+- Lists available backups
+- Cleans up old backups
+- Manages database state
+
+### Docker Management (`scripts/docker.js`)
+
+- Starts/stops containers
+- Builds images
+- Manages environment
+- Shows service information
+- Handles Docker Compose operations
+
+### Health Check (`scripts/health.js`)
+
+- Checks Docker status
+- Verifies database connectivity
+- Tests Redis connection
+- Monitors API endpoints
+- Checks web server
+- Generates health reports
+
+### Test Runner (`scripts/test.js`)
+
+- Runs unit tests
+- Executes integration tests
+- Performs end-to-end tests
+- Generates test reports
+- Tracks test duration
+- Provides test summaries
+
+### Environment Setup (`scripts/setup.js`)
+
+- Creates environment files
+- Sets up development configuration
+- Configures production settings
+- Manages environment variables
+- Installs dependencies
+
+### Reset Environment (`scripts/reset.js`)
+
+- Stops containers
+- Removes volumes
+- Cleans build artifacts
+- Resets database
+- Rebuilds environment
+- Reinstalls dependencies
+
+## Environment Files
+
+### Development
+
+- `.env.development` - Development environment variables
+- `.env.local` - Local Docker configuration
+- `.env` - Active environment (copied from development by default)
+
+### Production
+
+- `.env.production` - Production environment variables
+- `.env.test` - Test environment variables
+
+## Directory Structure
+
+```
+phase-platform/
+├── apps/              # Application packages
+├── packages/          # Shared packages
+├── scripts/           # Cross-platform scripts
+├── test-reports/      # Test execution reports
+├── logs/             # Application logs
+└── backups/          # Database backups
+```
+
+## Requirements
+
+- Node.js >= 18.17.0
+- pnpm >= 9.6.0
+- Docker Desktop
+- Git
+
+## Getting Started
+
+1. Clone the repository
+2. Run `pnpm setup`
+3. Start development with `pnpm dev`
+4. Access the application at `http://localhost:3000`
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Run tests with `pnpm test`
+4. Submit a pull request
+
+## License
+
+Apache-2.0

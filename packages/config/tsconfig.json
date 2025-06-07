@@ -13,6 +13,12 @@
     "composite": true,
     "noEmit": false
   },
-  "include": ["src/**/*", "eslint.config.js", "*.config.js", "*.config.ts"],
+  "include": [
+    "src/**/*",
+    "eslint.config.js",
+    "*.config.js",
+    "*.config.ts",
+    "types/**/*"
+  ],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

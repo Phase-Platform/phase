@@ -20,6 +20,7 @@ const config = [
       '**/dist/**',
       '**/build/**',
       '**/.turbo/**',
+      'base.js',
     ],
     languageOptions: {
       ecmaVersion: 2022,
@@ -90,7 +91,7 @@ const config = [
     },
   },
   {
-    files: ['*.config.js', '*.config.ts', 'eslint.config.js'],
+    files: ['*.config.js', '*.config.ts', 'eslint.config.js', 'base.js'],
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
       'import/no-default-export': 'off',

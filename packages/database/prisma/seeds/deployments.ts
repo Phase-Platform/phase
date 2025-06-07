@@ -1,14 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { DeploymentStatus, type PrismaClient } from '@prisma/client';
 
 export async function seedDeployments(prisma: PrismaClient) {
   const deployments = [
     {
-      version: "1.0.0",
-      status: "COMPLETED",
-      projectId: "proj_1",
-      environmentId: "env_1",
-      startTime: new Date("2024-03-01T09:00:00Z"),
-      endTime: new Date("2024-03-01T09:25:00Z"),
+      version: '1.0.0',
+      status: DeploymentStatus.SUCCESS,
+      projectId: 'proj_1',
+      environmentId: 'env_1',
+      startTime: new Date('2024-03-01T09:00:00Z'),
+      endTime: new Date('2024-03-01T09:25:00Z'),
       logs: `
 [2024-03-01 09:00:00] Starting deployment
 [2024-03-01 09:05:00] Running database migrations
@@ -18,17 +18,20 @@ export async function seedDeployments(prisma: PrismaClient) {
 [2024-03-01 09:25:00] Deployment completed successfully
       `,
       metadata: {
-        duration: "25 minutes",
+        duration: '25 minutes',
         success: true,
         rollback: false,
-        affectedServices: ["backend", "frontend", "database"],
+        affectedServices: ['backend', 'frontend', 'database'],
       },
     },
   ];
 
-  for (const deployment of deployments) {
-    await prisma.deployment.create({
-      data: deployment,
-    });
-  }
+  // Create all deployments in parallel
+  await Promise.all(
+    deployments.map((deployment) =>
+      prisma.deployment.create({
+        data: deployment,
+      })
+    )
+  );
 }

@@ -11,14 +11,17 @@
     "declarationMap": true,
     "sourceMap": true,
     "composite": true,
-    "noEmit": false
+    "noEmit": false,
+    "allowJs": true,
+    "checkJs": true
   },
   "include": [
     "src/**/*",
     "eslint.config.js",
     "*.config.js",
     "*.config.ts",
-    "base.js"
+    "base.js",
+    "base.d.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

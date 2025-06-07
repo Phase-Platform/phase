@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export * from "./api";
-export * from "./common";
+
+// Re-export from other modules
+export * from './api';
+export * from './common';
 
 // Common types
 export interface BaseEntity {
@@ -16,18 +18,14 @@ export interface ApiResponse<T> {
   status: number;
 }
 
-// Database types
-export interface DatabaseConfig {
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-  database: string;
-  url?: string;
-}
-
-export interface DatabaseConnection {
-  query: <T>(sql: string, params?: unknown[]) => Promise<T[]>;
-  connect: () => Promise<void>;
-  close: () => Promise<void>;
-}
+// Re-export Prisma types (only if @prisma/client is available)
+export {
+  BugStatus,
+  FeatureStatus,
+  Priority,
+  ProjectRole,
+  ProjectStatus,
+  Severity,
+  SprintStatus,
+  UserRole,
+} from '@prisma/client';

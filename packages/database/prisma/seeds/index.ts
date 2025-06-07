@@ -1,29 +1,35 @@
-import { PrismaClient } from "@prisma/client";
-import { seedUsers } from "./users";
-import { seedTeams } from "./teams";
-import { seedProjects } from "./projects";
-import { seedPhases } from "./phases";
-import { seedFeatures } from "./features";
-import { seedTasks } from "./tasks";
-import { seedTestSuites } from "./test-suites";
-import { seedTestCases } from "./test-cases";
-import { seedCodeReviews } from "./code-reviews";
-import { seedDocuments } from "./documents";
-import { seedNotifications } from "./notifications";
-import { seedReleases } from "./releases";
-import { seedEnvironments } from "./environments";
-import { seedMetrics } from "./metrics";
-import { seedOrganizations } from "./organizations";
-import { seedWorkflowTemplates } from "./workflow-templates";
-import { seedIntegrations } from "./integrations";
-import { seedWebhooks } from "./webhooks";
-import { seedCustomFields } from "./custom-fields";
-import { seedAutomationRules } from "./automation-rules";
+import { clearScreenDown } from 'readline';
+
+import { seedAutomationRules } from './automation-rules';
+import { seedCodeReviews } from './code-reviews';
+import { seedCustomFields } from './custom-fields';
+import { seedDeployments } from './deployments';
+import { seedDocuments } from './documents';
+import { seedEnvironments } from './environments';
+import { seedFeatures } from './features';
+import { seedIntegrations } from './integrations';
+import { logger } from './logger';
+import { seedMetrics } from './metrics';
+import { seedNotifications } from './notifications';
+import { seedOrganizations } from './organizations';
+import { seedPhases } from './phases';
+import { seedProjects } from './projects';
+import { seedReleases } from './releases';
+import { seedTasks } from './tasks';
+import { seedTeams } from './teams';
+import { seedTestCases } from './test-cases';
+import { seedTestSuites } from './test-suites';
+import { seedUsers } from './users';
+import { seedWebhooks } from './webhooks';
+import { seedWorkflowTemplates } from './workflow-templates';
+
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Starting database seeding...");
+  clearScreenDown(process.stdout);
+  logger.info('Starting database seeding...');
 
   try {
     // Seed core entities first
@@ -58,9 +64,12 @@ async function main() {
     await seedCustomFields(prisma);
     await seedAutomationRules(prisma);
 
-    console.log("Database seeding completed successfully!");
+    // Seed deployment entities
+    await seedDeployments(prisma);
+
+    logger.success('Database seeding completed successfully!');
   } catch (error) {
-    console.error("Error seeding database:", error);
+    logger.error(error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -68,28 +77,28 @@ async function main() {
 }
 
 main().catch((e) => {
-  console.error(e);
+  logger.error(e);
   process.exit(1);
 });
 
-export * from "./organizations";
-export * from "./users";
-export * from "./teams";
-export * from "./projects";
-export * from "./phases";
-export * from "./features";
-export * from "./tasks";
-export * from "./test-suites";
-export * from "./test-cases";
-export * from "./code-reviews";
-export * from "./documents";
-export * from "./notifications";
-export * from "./releases";
-export * from "./environments";
-export * from "./metrics";
-export * from "./workflow-templates";
-export * from "./integrations";
-export * from "./webhooks";
-export * from "./custom-fields";
-export * from "./automation-rules";
-export * from "./deployments";
+export * from './automation-rules';
+export * from './code-reviews';
+export * from './custom-fields';
+export * from './deployments';
+export * from './documents';
+export * from './environments';
+export * from './features';
+export * from './integrations';
+export * from './metrics';
+export * from './notifications';
+export * from './organizations';
+export * from './phases';
+export * from './projects';
+export * from './releases';
+export * from './tasks';
+export * from './teams';
+export * from './test-cases';
+export * from './test-suites';
+export * from './users';
+export * from './webhooks';
+export * from './workflow-templates';

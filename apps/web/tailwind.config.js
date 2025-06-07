@@ -1,4 +1,4 @@
-import baseConfig from "@phase-platform/tools-tailwind/base.js";
+import baseConfig from '@phase-platform/tools-tailwind/base.js';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -11,4 +11,9 @@ export default {
     hoverOnlyWhenSupported: true,
   },
   darkMode: 'media',
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 };

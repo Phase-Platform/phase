@@ -1,0 +1,33 @@
+{
+  "name": "@phase-platform/auth",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/auth.js",
+  "types": "./dist/auth.d.ts",
+  "scripts": {
+    "build": "tsup src/auth.ts --format esm --dts --clean",
+    "dev": "tsup src/auth.ts --format esm --dts --clean --watch",
+    "lint": "eslint src/",
+    "clean": "rimraf dist",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^1.6.0",
+    "@phase-platform/database": "workspace:*",
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^2.4.3",
+    "next": "^15.3.3",
+    "next-auth": "^4.24.7"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.19.0",
+    "@types/next": "^9.0.0",
+    "@types/next-auth": "^3.15.0",
+    "eslint": "^8.57.1",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}

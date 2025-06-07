@@ -1,50 +1,35 @@
-import { z } from "zod";
+import { config } from 'dotenv';
+import { z } from 'zod';
+
+// Load environment variables from .env file
+config();
 
 const envSchema = z.object({
-  // Database
-  DATABASE_URL: z.string().url(),
-
-  // Environment
-  NODE_ENV: z
-    .enum(["development", "test", "production"])
-    .default("development"),
-
-  // Optional configurations
-  DATABASE_MAX_CONNECTIONS: z.string().transform(Number).optional(),
-  DATABASE_IDLE_TIMEOUT: z.string().transform(Number).optional(),
-  DATABASE_CONNECTION_TIMEOUT: z.string().transform(Number).optional(),
+  DATABASE_URL: z.string().min(1),
+  DATABASE_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+  DATABASE_IDLE_TIMEOUT: z.coerce.number().int().positive().default(30000),
+  DATABASE_CONNECTION_TIMEOUT: z.coerce.number().int().positive().default(5000),
+  DATABASE_SSL_ENABLED: z.coerce.boolean().default(false),
 });
 
 /**
  * Validate and parse environment variables
  */
-export const env = envSchema.parse({
-  DATABASE_URL: process.env.DATABASE_URL,
-  NODE_ENV: process.env.NODE_ENV,
-  DATABASE_MAX_CONNECTIONS: process.env.DATABASE_MAX_CONNECTIONS,
-  DATABASE_IDLE_TIMEOUT: process.env.DATABASE_IDLE_TIMEOUT,
-  DATABASE_CONNECTION_TIMEOUT: process.env.DATABASE_CONNECTION_TIMEOUT,
-});
+export const env = envSchema.parse(process.env);
 
 /**
- * Type for environment variables
+ * Validate required environment variables
  */
-export type Env = z.infer<typeof envSchema>;
-
-/**
- * Validate environment variables
- * @throws {Error} if environment variables are invalid
- */
-export function validateEnv() {
+export function validateEnv(): void {
   try {
     envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
       const missingVars = error.errors
-        .map((err) => err.path.join("."))
-        .join(", ");
+        .map((err) => err.path.join('.'))
+        .join(', ');
       throw new Error(
-        `Missing or invalid environment variables: ${missingVars}`,
+        `Missing or invalid environment variables: ${missingVars}`
       );
     }
     throw error;

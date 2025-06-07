@@ -1,225 +1,286 @@
-import { PrismaClient, Methodology, TaskType } from "@prisma/client";
+import { Methodology, type PrismaClient, TaskType } from '@prisma/client';
 
 export async function seedWorkflowTemplates(prisma: PrismaClient) {
   const workflowTemplates = [
     {
-      id: "wf_1",
-      name: "Standard Agile Workflow",
-      description: "Standard workflow for agile software development",
-      type: "AGILE",
-      status: "ACTIVE",
-      category: "SOFTWARE_DEVELOPMENT",
+      name: 'Standard Agile Workflow',
+      description: 'Standard workflow for agile software development',
+      type: 'AGILE',
+      status: 'ACTIVE',
+      category: 'SOFTWARE_DEVELOPMENT',
       methodology: Methodology.SCRUM,
       metadata: {
-        methodology: "Scrum",
+        methodology: 'Scrum',
         sprintDuration: 14,
         ceremonies: [
-          "Daily Standup",
-          "Sprint Planning",
-          "Sprint Review",
-          "Sprint Retrospective",
+          'Daily Standup',
+          'Sprint Planning',
+          'Sprint Review',
+          'Sprint Retrospective',
         ],
-        roles: ["Product Owner", "Scrum Master", "Development Team"],
+        roles: ['Product Owner', 'Scrum Master', 'Development Team'],
       },
       phases: [
         {
-          name: "Backlog",
-          description: "Product backlog items",
+          name: 'Backlog',
+          description: 'Product backlog items',
           order: 1,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Create User Story",
-              description: "Create a new user story",
-              type: "TASK",
+              title: 'Create User Story',
+              description: 'Create a new user story',
+              type: TaskType.DEVELOPMENT,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Estimate Story Points",
-              description: "Estimate story points for the user story",
-              type: "TASK",
+              title: 'Estimate Story Points',
+              description: 'Estimate story points for the user story',
+              type: TaskType.DEVELOPMENT,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
         {
-          name: "Sprint Planning",
-          description: "Sprint planning phase",
+          name: 'Sprint Planning',
+          description: 'Sprint planning phase',
           order: 2,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Select Stories",
-              description: "Select stories for the sprint",
-              type: "TASK",
+              title: 'Select Stories',
+              description: 'Select stories for the sprint',
+              type: TaskType.DEVELOPMENT,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Create Sprint Backlog",
-              description: "Create sprint backlog",
-              type: "TASK",
+              title: 'Create Sprint Backlog',
+              description: 'Create sprint backlog',
+              type: TaskType.DEVELOPMENT,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
         {
-          name: "Development",
-          description: "Development phase",
+          name: 'Development',
+          description: 'Development phase',
           order: 3,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Implement Feature",
-              description: "Implement the feature",
-              type: "TASK",
+              title: 'Implement Feature',
+              description: 'Implement the feature',
+              type: TaskType.DEVELOPMENT,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Write Tests",
-              description: "Write unit tests",
-              type: "TASK",
+              title: 'Write Tests',
+              description: 'Write unit tests',
+              type: TaskType.TESTING,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Code Review",
-              description: "Review the code",
-              type: "TASK",
+              title: 'Code Review',
+              description: 'Review the code',
+              type: TaskType.REVIEW,
               order: 3,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
         {
-          name: "Testing",
-          description: "Testing phase",
+          name: 'Testing',
+          description: 'Testing phase',
           order: 4,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "QA Testing",
-              description: "Perform QA testing",
-              type: "TASK",
+              title: 'QA Testing',
+              description: 'Perform QA testing',
+              type: TaskType.TESTING,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Bug Fixing",
-              description: "Fix identified bugs",
-              type: "TASK",
+              title: 'Bug Fixing',
+              description: 'Fix identified bugs',
+              type: TaskType.DEVELOPMENT,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
         {
-          name: "Done",
-          description: "Completed items",
+          name: 'Done',
+          description: 'Completed items',
           order: 5,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Documentation",
-              description: "Update documentation",
-              type: "TASK",
+              title: 'Documentation',
+              description: 'Update documentation',
+              type: TaskType.DOCUMENTATION,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Deployment",
-              description: "Deploy to production",
-              type: "TASK",
+              title: 'Deployment',
+              description: 'Deploy to production',
+              type: TaskType.DEPLOYMENT,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
       ],
     },
     {
-      id: "wf_2",
-      name: "Kanban Workflow",
-      description: "Workflow for continuous delivery using Kanban",
-      type: "KANBAN",
-      status: "ACTIVE",
-      category: "SOFTWARE_DEVELOPMENT",
+      name: 'Kanban Workflow',
+      description: 'Workflow for continuous delivery using Kanban',
+      type: 'KANBAN',
+      status: 'ACTIVE',
+      category: 'SOFTWARE_DEVELOPMENT',
       methodology: Methodology.KANBAN,
       metadata: {
-        methodology: "Kanban",
+        methodology: 'Kanban',
         wipLimits: {
-          "To Do": 10,
-          "In Progress": 5,
+          'To Do': 10,
+          'In Progress': 5,
           Review: 3,
           Done: 10,
         },
-        metrics: ["Lead Time", "Cycle Time", "Throughput"],
+        metrics: ['Lead Time', 'Cycle Time', 'Throughput'],
       },
       phases: [
         {
-          name: "To Do",
-          description: "Backlog items",
+          name: 'To Do',
+          description: 'Backlog items',
           order: 1,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Create Ticket",
-              description: "Create a new ticket",
-              type: "TASK",
+              title: 'Create Ticket',
+              description: 'Create a new ticket',
+              type: TaskType.DEVELOPMENT,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Prioritize",
-              description: "Prioritize the ticket",
-              type: "TASK",
+              title: 'Prioritize',
+              description: 'Prioritize the ticket',
+              type: TaskType.DEVELOPMENT,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
         {
-          name: "In Progress",
-          description: "Items being worked on",
+          name: 'In Progress',
+          description: 'Items being worked on',
           order: 2,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Development",
-              description: "Implement the feature",
-              type: "TASK",
+              title: 'Development',
+              description: 'Implement the feature',
+              type: TaskType.DEVELOPMENT,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "Testing",
-              description: "Test the implementation",
-              type: "TASK",
+              title: 'Testing',
+              description: 'Test the implementation',
+              type: TaskType.TESTING,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
         {
-          name: "Review",
-          description: "Items under review",
+          name: 'Review',
+          description: 'Items under review',
           order: 3,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Code Review",
-              description: "Review the code",
-              type: "TASK",
+              title: 'Code Review',
+              description: 'Review the code',
+              type: TaskType.REVIEW,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
             {
-              name: "QA Review",
-              description: "QA review",
-              type: "TASK",
+              title: 'QA Review',
+              description: 'QA review',
+              type: TaskType.REVIEW,
               order: 2,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
         {
-          name: "Done",
-          description: "Completed items",
+          name: 'Done',
+          description: 'Completed items',
           order: 4,
-          status: "ACTIVE",
+          status: 'ACTIVE',
+          type: 'DEVELOPMENT',
+          isRequired: true,
+          allowedRoles: [],
           tasks: [
             {
-              name: "Deployment",
-              description: "Deploy to production",
-              type: "TASK",
+              title: 'Deployment',
+              description: 'Deploy to production',
+              type: TaskType.DEPLOYMENT,
               order: 1,
+              isRequired: true,
+              complexity: 'MEDIUM',
             },
           ],
         },
@@ -227,46 +288,45 @@ export async function seedWorkflowTemplates(prisma: PrismaClient) {
     },
   ];
 
-  for (const template of workflowTemplates) {
-    const { phases, ...templateData } = template;
+  await Promise.all(
+    workflowTemplates.map(async (template) => {
+      const { phases, ...templateData } = template;
 
-    const createdTemplate = await prisma.workflowTemplate.create({
-      data: {
-        ...templateData,
-        createdAt: new Date(),
-      },
-    });
-
-    // Create phases for the template
-    for (const phase of phases) {
-      const { tasks, ...phaseData } = phase;
-
-      const createdPhase = await prisma.phaseTemplate.create({
+      const createdTemplate = await prisma.workflowTemplate.create({
         data: {
-          ...phaseData,
-          workflowId: createdTemplate.id,
+          ...templateData,
           createdAt: new Date(),
-          type: "DEVELOPMENT",
-          isRequired: true,
-          allowedRoles: [],
+          updatedAt: new Date(),
         },
       });
 
-      // Create tasks for each phase
-      for (const task of tasks) {
-        await prisma.taskTemplate.create({
-          data: {
-            title: task.name,
-            description: task.description,
-            type: TaskType.DEVELOPMENT,
-            phaseId: createdPhase.id,
-            order: task.order,
-            createdAt: new Date(),
-            isRequired: true,
-            complexity: "MEDIUM",
-          },
-        });
-      }
-    }
-  }
+      await Promise.all(
+        phases.map(async (phase) => {
+          const { tasks, ...phaseData } = phase;
+
+          const createdPhase = await prisma.phaseTemplate.create({
+            data: {
+              ...phaseData,
+              workflowId: createdTemplate.id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          });
+
+          await Promise.all(
+            tasks.map((task) =>
+              prisma.taskTemplate.create({
+                data: {
+                  ...task,
+                  phaseId: createdPhase.id,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                },
+              })
+            )
+          );
+        })
+      );
+    })
+  );
 }

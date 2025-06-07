@@ -1,67 +1,103 @@
-import { Pool, PoolClient } from "pg";
-import { DatabaseConfig, DatabaseConnection } from "@phase-platform/types";
-import { env } from "./env";
+import { logger } from './utils/logger';
+import { env } from './env';
+import type { DatabaseConfig, DatabaseConnection } from './types';
+import { PrismaClient } from '@prisma/client';
+
+class PrismaSingleton {
+  private static instance: PrismaClient | null = null;
+
+  private constructor() {}
+
+  public static getInstance(): PrismaClient {
+    if (!PrismaSingleton.instance) {
+      PrismaSingleton.instance = new PrismaClient({
+        datasources: {
+          db: {
+            url: env.DATABASE_URL,
+          },
+        },
+        log: ['error', 'warn'],
+      });
+
+      // Handle connection lifecycle
+      process.on('beforeExit', async () => {
+        if (PrismaSingleton.instance) {
+          await PrismaSingleton.instance.$disconnect();
+          PrismaSingleton.instance = null;
+        }
+      });
+    }
+    return PrismaSingleton.instance;
+  }
+
+  public static async disconnect(): Promise<void> {
+    if (PrismaSingleton.instance) {
+      await PrismaSingleton.instance.$disconnect();
+      PrismaSingleton.instance = null;
+    }
+  }
+}
+
+export const prisma = PrismaSingleton.getInstance();
 
 export class DatabaseClient implements DatabaseConnection {
-  private pool: Pool;
-  private client: PoolClient | null = null;
+  private isConnected: boolean = false;
 
   constructor(config?: Partial<DatabaseConfig>) {
     // Parse DATABASE_URL if not provided with config
     const dbUrl = new URL(env.DATABASE_URL);
 
-    this.pool = new Pool({
-      host: config?.host || dbUrl.hostname,
-      port: config?.port || parseInt(dbUrl.port),
-      user: config?.username || dbUrl.username,
-      password: config?.password || dbUrl.password,
-      database: config?.database || dbUrl.pathname.slice(1),
-      max: env.DATABASE_MAX_CONNECTIONS,
-      idleTimeoutMillis: env.DATABASE_IDLE_TIMEOUT,
-      connectionTimeoutMillis: env.DATABASE_CONNECTION_TIMEOUT,
+    // Handle connection lifecycle
+    process.on('beforeExit', async () => {
+      await this.close();
     });
   }
 
   async connect(): Promise<void> {
-    this.client = await this.pool.connect();
+    if (this.isConnected) return;
+
+    try {
+      await prisma.$connect();
+      this.isConnected = true;
+    } catch (error) {
+      this.isConnected = false;
+      throw new Error(
+        `Failed to connect to database: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
   }
 
   async close(): Promise<void> {
-    if (this.client) {
-      this.client.release();
-      this.client = null;
-    }
-    await this.pool.end();
+    await prisma.$disconnect();
+    this.isConnected = false;
   }
 
   async query<T>(sql: string, params?: unknown[]): Promise<T[]> {
-    const client = this.client || (await this.pool.connect());
+    if (!this.isConnected) {
+      await this.connect();
+    }
+
     try {
-      const result = await client.query(sql, params);
-      return result.rows as T[];
-    } finally {
-      if (!this.client) {
-        client.release();
-      }
+      const result = await prisma.$queryRawUnsafe<T[]>(sql, ...(params || []));
+      return result;
+    } catch (error) {
+      throw new Error(
+        `Query execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
-  async transaction<T>(
-    callback: (connection: DatabaseConnection) => Promise<T>,
-  ): Promise<T> {
-    const client = this.client || (await this.pool.connect());
+  async transaction<T>(callback: () => Promise<T>): Promise<T> {
+    if (!this.isConnected) {
+      await this.connect();
+    }
+
     try {
-      await client.query("BEGIN");
-      const result = await callback(this);
-      await client.query("COMMIT");
-      return result;
+      return await prisma.$transaction(callback);
     } catch (error) {
-      await client.query("ROLLBACK");
-      throw error;
-    } finally {
-      if (!this.client) {
-        client.release();
-      }
+      throw new Error(
+        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }

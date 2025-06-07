@@ -4,27 +4,36 @@
   "private": true,
   "type": "module",
   "description": "Shared types for Phase Platform",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./schemas": {
       "types": "./dist/schemas.d.ts",
-      "default": "./dist/schemas.js"
+      "import": "./dist/schemas.js"
     }
   },
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && tsc --build",
     "clean": "rimraf dist",
     "dev": "tsc --watch",
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "zod": "^3.22.4"
+    "@prisma/client": "^5.22.0",
+    "zod": "^3.25.55"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19"
   }
 }

@@ -4,12 +4,13 @@
   "private": true,
   "description": "ESLint configuration for Phase Platform",
   "type": "module",
-  "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js",
-    "./src/index.js": "./src/index.js"
+    ".": "./eslint.config.js",
+    "./base": "./src/base.js",
+    "./react": "./src/react.js"
   },
   "files": [
+    "eslint.config.js",
     "src"
   ],
   "scripts": {
@@ -25,7 +26,17 @@
   "author": "Phase Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "@next/eslint-plugin-next": "^15.3.3"
+    "@eslint/js": "^8.57.0",
+    "@next/eslint-plugin-next": "^14.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "eslint-plugin-unused-imports": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
@@ -36,11 +47,7 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-tailwindcss": "^3.18.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-simple-import-sort": "^12.0.0",
-    "eslint-plugin-unused-imports": "^3.0.0"
+    "eslint-plugin-tailwindcss": "^3.18.0"
   },
   "peerDependencies": {
     "eslint": "^8.57.1",

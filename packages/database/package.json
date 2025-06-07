@@ -2,46 +2,44 @@
   "name": "@phase-platform/database",
   "version": "0.1.0",
   "private": true,
-  "description": "Database layer with Prisma ORM for Phase Platform",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "type": "module",
+  "description": "Database layer for Phase Platform",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./client": {
-      "types": "./dist/client.d.ts",
-      "default": "./dist/client.js"
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
     }
   },
+  "files": [
+    "dist/**/*",
+    "prisma/**/*"
+  ],
   "scripts": {
-    "build": "pnpm --filter @phase-platform/types build && prisma generate && tsc",
+    "build": "prisma generate && rimraf dist && tsc -p tsconfig.build.json && tsc -p tsconfig.build.cjs.json",
+    "clean": "rimraf dist",
     "dev": "tsc --watch",
-    "clean": "rimraf .turbo node_modules dist",
-    "type-check": "pnpm --filter @phase-platform/types build && tsc --noEmit",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy",
-    "db:migrate:reset": "prisma migrate reset",
     "db:push": "prisma db push",
-    "db:seed": "tsx src/seed.ts",
+    "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:format": "prisma format"
+    "lint": "eslint . --cache --cache-location .cache/.eslintcache",
+    "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache",
+    "type-check": "tsc -p tsconfig.build.json --noEmit && tsc -p prisma/tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@phase-platform/types": "workspace:*",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
-    "pg": "^8.11.3",
-    "zod": "^3.22.4"
+    "dotenv": "^16.4.5",
+    "zod": "^3.25.55"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
-    "@types/pg": "^8.11.0",
-    "tsx": "^4.7.1"
-  },
-  "prisma": {
-    "schema": "./prisma/schema.prisma"
+    "@types/node": "^20.11.19",
+    "prisma": "^5.22.0"
   }
 }

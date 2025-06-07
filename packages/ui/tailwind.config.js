@@ -1,4 +1,4 @@
-import baseConfig from '@phase-platform/tools-tailwind/base.js';
+import baseConfig from '@phase-platform/tools-tailwind';
 
 /** @type {import('tailwindcss').Config} */
 const config = /** @type {import('tailwindcss').Config} */ ({

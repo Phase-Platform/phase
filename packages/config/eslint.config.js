@@ -1,18 +1,38 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-import baseConfig from "@phase-platform/tools-eslint/src/index.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import baseConfig from '@phase-platform/tools-eslint/base';
 
 export default [
-  ...baseConfig,
+  // Base configuration for all files
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
+  },
+  // ESLint config files
+  {
+    files: ['**/eslint.config.js'],
+    languageOptions: {
+      sourceType: 'module',
+      ecmaVersion: 'latest',
+    },
+  },
+  // JavaScript files
+  {
+    files: ['**/*.js'],
+    ignores: ['**/eslint.config.js'],
+    languageOptions: {
+      sourceType: 'module',
+      ecmaVersion: 'latest',
+    },
+  },
+  // TypeScript files
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['**/eslint.config.js', 'tools/eslint/**'],
     languageOptions: {
       parserOptions: {
-        project: path.resolve(__dirname, './tsconfig.json'),
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: '.',
       },
     },
   },
+  // Apply base config
+  ...baseConfig,
 ];

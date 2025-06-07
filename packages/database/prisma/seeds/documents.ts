@@ -1,9 +1,39 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, type PrismaClient } from '@prisma/client';
+
+interface DocumentData {
+  title: string;
+  content: string;
+  type: string;
+  status: string;
+  projectId: string;
+  phaseId: string;
+  createdById: string;
+  version: string;
+  tags: string[];
+  metadata: Record<string, unknown>;
+}
+
+interface CreatedDocument {
+  id: string;
+  title: string;
+  content: string;
+  type: string;
+  status: string;
+  projectId: string;
+  phaseId: string;
+  createdById: string;
+  version: string;
+  tags: string[];
+  metadata: Record<string, unknown>;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+}
 
 export async function seedDocuments(prisma: PrismaClient) {
-  const documents = [
+  const documents: DocumentData[] = [
     {
-      title: "Project Requirements Specification",
+      title: 'Project Requirements Specification',
       content: `
 # Project Requirements Specification
 
@@ -58,21 +88,21 @@ This document outlines the requirements for the E-commerce Platform project.
 - Phase 3: Testing (2 weeks)
 - Phase 4: Deployment (1 week)
       `,
-      type: "REQUIREMENTS",
-      status: "PUBLISHED",
-      projectId: "proj_1",
-      phaseId: "phase_1",
-      createdById: "user_1",
-      version: "1.0",
-      tags: ["requirements", "specification", "documentation"],
+      type: 'REQUIREMENTS',
+      status: 'PUBLISHED',
+      projectId: 'proj_1',
+      phaseId: 'phase_1',
+      createdById: 'user_1',
+      version: '1.0',
+      tags: ['requirements', 'specification', 'documentation'],
       metadata: {
-        category: "Project Documentation",
-        audience: "Development Team",
+        category: 'Project Documentation',
+        audience: 'Development Team',
         lastReviewed: new Date(),
       },
     },
     {
-      title: "API Documentation",
+      title: 'API Documentation',
       content: `
 # API Documentation
 
@@ -123,21 +153,21 @@ Response:
 }
 \`\`\`
       `,
-      type: "API_DOCS",
-      status: "PUBLISHED",
-      projectId: "proj_1",
-      phaseId: "phase_2",
-      createdById: "user_2",
-      version: "1.0",
-      tags: ["api", "documentation", "technical"],
+      type: 'API_DOCS',
+      status: 'PUBLISHED',
+      projectId: 'proj_1',
+      phaseId: 'phase_2',
+      createdById: 'user_2',
+      version: '1.0',
+      tags: ['api', 'documentation', 'technical'],
       metadata: {
-        category: "Technical Documentation",
-        audience: "Developers",
+        category: 'Technical Documentation',
+        audience: 'Developers',
         lastUpdated: new Date(),
       },
     },
     {
-      title: "Test Plan",
+      title: 'Test Plan',
       content: `
 # Test Plan
 
@@ -173,63 +203,106 @@ Response:
 - Postman
 - JMeter
       `,
-      type: "TEST_PLAN",
-      status: "DRAFT",
-      projectId: "proj_1",
-      phaseId: "phase_3",
-      createdById: "user_4",
-      version: "0.1",
-      tags: ["testing", "plan", "qa"],
+      type: 'TEST_PLAN',
+      status: 'DRAFT',
+      projectId: 'proj_1',
+      phaseId: 'phase_3',
+      createdById: 'user_4',
+      version: '0.1',
+      tags: ['testing', 'plan', 'qa'],
       metadata: {
-        category: "Testing Documentation",
-        audience: "QA Team",
+        category: 'Testing Documentation',
+        audience: 'QA Team',
         lastModified: new Date(),
       },
     },
   ];
 
-  for (const doc of documents) {
-    const createdDoc = await prisma.document.create({
-      data: {
-        ...doc,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        publishedAt: doc.status === "PUBLISHED" ? new Date() : null,
-      },
-    });
+  // Create all documents in parallel
+  const createdDocs = await Promise.all(
+    documents.map(
+      (doc) =>
+        prisma.$queryRaw<CreatedDocument[]>`
+        INSERT INTO documents (
+          id, title, content, type, status, version, tags, metadata,
+          project_id, phase_id, created_by_id, created_at, updated_at, published_at
+        ) VALUES (
+          ${Prisma.sql`gen_random_uuid()`},
+          ${doc.title},
+          ${doc.content},
+          ${doc.type},
+          ${doc.status},
+          ${doc.version},
+          ${doc.tags},
+          ${doc.metadata},
+          ${doc.projectId},
+          ${doc.phaseId},
+          ${doc.createdById},
+          ${new Date()},
+          ${new Date()},
+          ${doc.status === 'PUBLISHED' ? new Date() : null}
+        )
+        RETURNING *
+      `
+    )
+  );
 
-    // Create attachments for documents
-    if (doc.type === "REQUIREMENTS") {
-      await prisma.attachment.create({
-        data: {
-          name: "Requirements Diagram",
-          type: "image/png",
-          url: "https://storage.example.com/diagrams/requirements.png",
-          size: 1024 * 1024, // 1MB
-          userId: doc.createdById,
-          documentId: createdDoc.id,
-          metadata: {
-            format: "PNG",
-            dimensions: "1920x1080",
-          },
-        },
-      });
-    }
+  // Flatten the array of arrays into a single array of documents
+  const flatDocs = createdDocs.flat();
 
-    // Create comments for documents
-    await prisma.comment.create({
-      data: {
-        content:
-          "Great documentation! Please add more details about the security requirements.",
-        userId: "user_2",
-        projectId: doc.projectId,
-        entityType: "DOCUMENT",
-        entityId: createdDoc.id,
-        metadata: {
-          type: "feedback",
-          priority: "medium",
-        },
-      },
-    });
-  }
+  // Create attachments and comments in parallel
+  await Promise.all(
+    flatDocs.flatMap((doc) => {
+      const operations: Prisma.PrismaPromise<unknown>[] = [];
+
+      // Add attachment for requirements document
+      if (
+        documents[documents.findIndex((d) => d.title === doc.title)].type ===
+        'REQUIREMENTS'
+      ) {
+        operations.push(
+          prisma.$queryRaw`
+            INSERT INTO attachments (
+              id, name, type, url, size, metadata,
+              user_id, document_id, created_at, updated_at
+            ) VALUES (
+              ${Prisma.sql`gen_random_uuid()`},
+              ${'Requirements Diagram'},
+              ${'image/png'},
+              ${'https://storage.example.com/diagrams/requirements.png'},
+              ${1024 * 1024},
+              ${{ format: 'PNG', dimensions: '1920x1080' }},
+              ${doc.createdById},
+              ${doc.id},
+              ${new Date()},
+              ${new Date()}
+            )
+          `
+        );
+      }
+
+      // Add comment
+      operations.push(
+        prisma.$queryRaw`
+          INSERT INTO comments (
+            id, content, user_id, project_id,
+            entity_type, entity_id, metadata,
+            created_at, updated_at
+          ) VALUES (
+            ${Prisma.sql`gen_random_uuid()`},
+            ${'Great documentation! Please add more details about the security requirements.'},
+            ${'user_2'},
+            ${doc.projectId},
+            ${'DOCUMENT'},
+            ${doc.id},
+            ${{ type: 'feedback', priority: 'medium' }},
+            ${new Date()},
+            ${new Date()}
+          )
+        `
+      );
+
+      return operations;
+    })
+  );
 }

@@ -1,35 +1,33 @@
-// API client configuration
-export interface ApiClientConfig {
-  baseUrl: string;
-  headers?: Record<string, string>;
-  timeout?: number;
-}
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import type { AppRouter } from './root';
+import type { Session } from './trpc';
+import { appRouter } from './root';
+import { createCallerFactory, createTRPCContext } from './trpc';
 
-// API client class
-export class ApiClient {
-  private config: ApiClientConfig;
+/**
+ * Create a server-side caller for the tRPC API
+ * @example
+ * const trpc = createCaller(createContext);
+ * const res = await trpc.user.all();
+ *       ^? User[]
+ */
+const createCaller = createCallerFactory(appRouter);
 
-  constructor(config: ApiClientConfig) {
-    this.config = config;
-  }
+/**
+ * Inference helpers for input types
+ * @example
+ * type UserByIdInput = RouterInputs['user']['byId']
+ *      ^? { id: string }
+ **/
+type RouterInputs = inferRouterInputs<AppRouter>;
 
-  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.config.baseUrl}${endpoint}`;
-    const headers = {
-      ...this.config.headers,
-      ...options.headers,
-    };
+/**
+ * Inference helpers for output types
+ * @example
+ * type AllUsersOutput = RouterOutputs['user']['all']
+ *      ^? User[]
+ **/
+type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
-
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.statusText}`);
-    }
-
-    const data = (await response.json()) as T;
-    return data;
-  }
-}
+export { appRouter, createCaller, createTRPCContext };
+export type { AppRouter, RouterInputs, RouterOutputs, Session };

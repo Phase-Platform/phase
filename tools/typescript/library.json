@@ -10,15 +10,15 @@
     "sourceMap": true,
     "composite": true,
     "noEmit": false,
-    "module": "ESNext",
+    "module": "es2022",
     "target": "ES2020",
-    "lib": ["DOM", "DOM.Iterable", "ES2020"],
-    "moduleResolution": "node",
+    "lib": ["ES2020"],
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "**/*.ts", "**/*.tsx"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
 }

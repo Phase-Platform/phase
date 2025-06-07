@@ -13,7 +13,7 @@
       "@/*": ["./src/*"]
     },
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -34,5 +34,11 @@
     "*.config.js",
     "*.config.ts"
   ],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "tools/**/*"
+  ]
 }

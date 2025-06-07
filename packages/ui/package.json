@@ -27,10 +27,17 @@
     "clsx": "^2.1.0",
     "lucide-react": "^0.344.0",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "@phase-platform/tools-tailwind": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/node": "^20.11.19",
+    "@types/eslint-plugin-jsx-a11y": "^6.2.3"
   }
 }

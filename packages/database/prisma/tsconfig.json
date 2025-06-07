@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tools/typescript/library.json",
+  "compilerOptions": {
+    "outDir": "../dist/prisma",
+    "rootDir": ".",
+    "noEmit": false
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules", "dist"]
+}

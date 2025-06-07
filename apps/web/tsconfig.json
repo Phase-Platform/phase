@@ -5,19 +5,20 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noEmit": true,
-    "types": ["react", "node"]
+    "noEmit": true
   },
   "include": [
     "next-env.d.ts",
-    "src",
+    "src/**/*",
+    "src/app/api/**/*",
     ".next/types/**/*.ts",
     "*.js",
     "*.ts",
     "*.tsx",
     "*.config.js",
     "*.config.ts",
-    "eslint.config.js"
+    "eslint.config.js",
+    "**/eslint.config.js"
   ],
   "exclude": ["node_modules", ".next", "dist"]
 }

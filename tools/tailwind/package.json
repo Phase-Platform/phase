@@ -4,7 +4,10 @@
   "private": true,
   "description": "Tailwind CSS configuration for Phase Platform",
   "type": "module",
-  "main": "./index.js",
+  "main": "./base.js",
+  "exports": {
+    ".": "./base.js"
+  },
   "scripts": {
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .cache/.eslintcache"
@@ -17,12 +20,14 @@
   ],
   "author": "Phase Team",
   "license": "Apache-2.0",
-  "dependencies": {},
+  "dependencies": {
+    "tailwindcss": "^3.4.17"
+  },
   "devDependencies": {
-    "tailwindcss": "^3.4.17",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "^20.11.19",
     "autoprefixer": "^10.4.21",
     "postcss-import": "^16.1.0",
     "postcss-nesting": "^13.0.1"

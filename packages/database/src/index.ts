@@ -1,7 +1,5 @@
-import { Pool } from "pg";
-import { DatabaseConfig, DatabaseConnection } from "@phase-platform/types";
-import { DatabaseClient } from "./client";
-import { prisma } from "./prisma";
+import { DatabaseClient } from './client';
+import type { DatabaseConfig } from './types';
 
 // Create a singleton instance
 let db: DatabaseClient | null = null;
@@ -13,19 +11,28 @@ export const getDatabase = (config: DatabaseConfig): DatabaseClient => {
   return db;
 };
 
-// Export types
-export type { DatabaseConfig, DatabaseConnection } from "@phase-platform/types";
-export { DatabaseClient } from "./client";
-export { prisma } from "./prisma";
+export const disconnectDatabase = async (): Promise<void> => {
+  if (db) {
+    await db.close();
+    db = null;
+  }
+};
 
-// Export enums
+// Export types and client
+export { DatabaseClient } from './client';
+export { prisma } from './prisma';
+export * from './types';
+
+// Export Prisma types and enums
 export {
   BugStatus,
   FeatureStatus,
   Priority,
+  type Prisma,
+  type PrismaClient,
   ProjectRole,
   ProjectStatus,
   Severity,
   SprintStatus,
   UserRole,
-} from "@prisma/client";
+} from '@prisma/client';

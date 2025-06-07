@@ -1,5 +1,7 @@
-import { z } from "zod";
+import superjson from 'superjson';
+import { z } from 'zod';
 
+import { auth } from '@phase-platform/auth';
 import {
   BugStatus,
   FeatureStatus,
@@ -10,10 +12,61 @@ import {
   Severity,
   SprintStatus,
   UserRole,
-} from "@phase-platform/database";
-import { initTRPC } from "@trpc/server";
+} from '@phase-platform/database';
+import { initTRPC, TRPCError } from '@trpc/server';
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
 
-const t = initTRPC.create();
+export interface Session {
+  user?: {
+    id: string;
+    email: string;
+    name?: string;
+  };
+}
+
+interface CreateContextOptions {
+  session: Session | null;
+}
+
+const createInnerTRPCContext = (opts: CreateContextOptions) => ({
+  session: opts.session,
+  prisma,
+});
+
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+  const { req } = opts;
+  const response = await auth.handler(req as unknown as Request);
+  const session = (await response.json()) as Session;
+
+  return createInnerTRPCContext({
+    session,
+  });
+};
+
+const t = initTRPC.context<typeof createTRPCContext>().create({
+  transformer: superjson,
+  errorFormatter({ shape }) {
+    return shape;
+  },
+});
+
+export const createTRPCRouter = t.router;
+export const { createCallerFactory } = t;
+
+export const publicProcedure = t.procedure;
+
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+export const privateProcedure = t.procedure.use(enforceUserIsAuthed);
 
 // User Router (already present)
 const userRouter = t.router({
@@ -31,7 +84,7 @@ const userRouter = t.router({
         title: z.string().optional(),
         department: z.string().optional(),
         preferences: z.any().optional(),
-      }),
+      })
     )
     .mutation(({ input }) => prisma.user.create({ data: input })),
   update: t.procedure
@@ -47,10 +100,10 @@ const userRouter = t.router({
           department: z.string().optional(),
           preferences: z.any().optional(),
         }),
-      }),
+      })
     )
     .mutation(({ input }) =>
-      prisma.user.update({ where: { id: input.id }, data: input.data }),
+      prisma.user.update({ where: { id: input.id }, data: input.data })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))
@@ -63,7 +116,7 @@ const organizationRouter = t.router({
   getById: t.procedure
     .input(z.object({ id: z.string() }))
     .query(({ input }) =>
-      prisma.organization.findUnique({ where: { id: input.id } }),
+      prisma.organization.findUnique({ where: { id: input.id } })
     ),
   create: t.procedure
     .input(
@@ -75,7 +128,7 @@ const organizationRouter = t.router({
         website: z.string().optional(),
         isActive: z.boolean().optional(),
         settings: z.any().optional(),
-      }),
+      })
     )
     .mutation(({ input }) => prisma.organization.create({ data: input })),
   update: t.procedure
@@ -90,15 +143,15 @@ const organizationRouter = t.router({
           isActive: z.boolean().optional(),
           settings: z.any().optional(),
         }),
-      }),
+      })
     )
     .mutation(({ input }) =>
-      prisma.organization.update({ where: { id: input.id }, data: input.data }),
+      prisma.organization.update({ where: { id: input.id }, data: input.data })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(({ input }) =>
-      prisma.organization.delete({ where: { id: input.id } }),
+      prisma.organization.delete({ where: { id: input.id } })
     ),
 });
 
@@ -108,7 +161,7 @@ const projectRouter = t.router({
   getById: t.procedure
     .input(z.object({ id: z.string() }))
     .query(({ input }) =>
-      prisma.project.findUnique({ where: { id: input.id } }),
+      prisma.project.findUnique({ where: { id: input.id } })
     ),
   create: t.procedure
     .input(
@@ -126,7 +179,7 @@ const projectRouter = t.router({
         settings: z.any().optional(),
         metadata: z.any().optional(),
         organizationId: z.string(),
-      }),
+      })
     )
     .mutation(({ input }) => prisma.project.create({ data: input })),
   update: t.procedure
@@ -146,15 +199,15 @@ const projectRouter = t.router({
           metadata: z.any().optional(),
           organizationId: z.string().optional(),
         }),
-      }),
+      })
     )
     .mutation(({ input }) =>
-      prisma.project.update({ where: { id: input.id }, data: input.data }),
+      prisma.project.update({ where: { id: input.id }, data: input.data })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(({ input }) =>
-      prisma.project.delete({ where: { id: input.id } }),
+      prisma.project.delete({ where: { id: input.id } })
     ),
 });
 
@@ -164,7 +217,7 @@ const projectMemberRouter = t.router({
   getById: t.procedure
     .input(z.object({ id: z.string() }))
     .query(({ input }) =>
-      prisma.projectMember.findUnique({ where: { id: input.id } }),
+      prisma.projectMember.findUnique({ where: { id: input.id } })
     ),
   create: t.procedure
     .input(
@@ -173,7 +226,7 @@ const projectMemberRouter = t.router({
         userId: z.string(),
         role: z.nativeEnum(ProjectRole),
         permissions: z.any().optional(),
-      }),
+      })
     )
     .mutation(({ input }) => prisma.projectMember.create({ data: input })),
   update: t.procedure
@@ -186,18 +239,18 @@ const projectMemberRouter = t.router({
           role: z.nativeEnum(ProjectRole).optional(),
           permissions: z.any().optional(),
         }),
-      }),
+      })
     )
     .mutation(({ input }) =>
       prisma.projectMember.update({
         where: { id: input.id },
         data: input.data,
-      }),
+      })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(({ input }) =>
-      prisma.projectMember.delete({ where: { id: input.id } }),
+      prisma.projectMember.delete({ where: { id: input.id } })
     ),
 });
 
@@ -207,7 +260,7 @@ const featureRouter = t.router({
   getById: t.procedure
     .input(z.object({ id: z.string() }))
     .query(({ input }) =>
-      prisma.feature.findUnique({ where: { id: input.id } }),
+      prisma.feature.findUnique({ where: { id: input.id } })
     ),
   create: t.procedure
     .input(
@@ -226,7 +279,7 @@ const featureRouter = t.router({
         labels: z.array(z.string()).optional(),
         tags: z.any().optional(),
         completedAt: z.date().optional(),
-      }),
+      })
     )
     .mutation(({ input }) => prisma.feature.create({ data: input })),
   update: t.procedure
@@ -249,15 +302,15 @@ const featureRouter = t.router({
           tags: z.any().optional(),
           completedAt: z.date().optional(),
         }),
-      }),
+      })
     )
     .mutation(({ input }) =>
-      prisma.feature.update({ where: { id: input.id }, data: input.data }),
+      prisma.feature.update({ where: { id: input.id }, data: input.data })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(({ input }) =>
-      prisma.feature.delete({ where: { id: input.id } }),
+      prisma.feature.delete({ where: { id: input.id } })
     ),
 });
 
@@ -289,7 +342,7 @@ const bugRouter = t.router({
         tags: z.any().optional(),
         resolvedAt: z.date().optional(),
         closedAt: z.date().optional(),
-      }),
+      })
     )
     .mutation(({ input }) => prisma.bug.create({ data: input })),
   update: t.procedure
@@ -316,10 +369,10 @@ const bugRouter = t.router({
           resolvedAt: z.date().optional(),
           closedAt: z.date().optional(),
         }),
-      }),
+      })
     )
     .mutation(({ input }) =>
-      prisma.bug.update({ where: { id: input.id }, data: input.data }),
+      prisma.bug.update({ where: { id: input.id }, data: input.data })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))
@@ -332,7 +385,7 @@ const sprintRouter = t.router({
   getById: t.procedure
     .input(z.object({ id: z.string() }))
     .query(({ input }) =>
-      prisma.sprint.findUnique({ where: { id: input.id } }),
+      prisma.sprint.findUnique({ where: { id: input.id } })
     ),
   create: t.procedure
     .input(
@@ -346,7 +399,7 @@ const sprintRouter = t.router({
         capacity: z.number().optional(),
         commitment: z.number().optional(),
         projectId: z.string(),
-      }),
+      })
     )
     .mutation(({ input }) => prisma.sprint.create({ data: input })),
   update: t.procedure
@@ -364,10 +417,10 @@ const sprintRouter = t.router({
           commitment: z.number().optional(),
           projectId: z.string().optional(),
         }),
-      }),
+      })
     )
     .mutation(({ input }) =>
-      prisma.sprint.update({ where: { id: input.id }, data: input.data }),
+      prisma.sprint.update({ where: { id: input.id }, data: input.data })
     ),
   delete: t.procedure
     .input(z.object({ id: z.string() }))

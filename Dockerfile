@@ -14,7 +14,10 @@ RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/types/package.json ./packages/types/
-COPY packages/*/package.json ./packages/*/
+COPY packages/database/package.json ./packages/database/
+COPY packages/ui/package.json ./packages/ui/
+COPY packages/api/package.json ./packages/api/
+COPY packages/config/package.json ./packages/config/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -33,15 +36,19 @@ RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/types/package.json ./packages/types/
-COPY packages/*/package.json ./packages/*/
+COPY packages/database/package.json ./packages/database/
+COPY packages/ui/package.json ./packages/ui/
+COPY packages/api/package.json ./packages/api/
+COPY packages/config/package.json ./packages/config/
 
 # Copy source code
 COPY . .
 
 # Install dependencies (will use cache from deps stage)
 RUN pnpm install --frozen-lockfile
-# Build packages
-RUN cd packages/types && pnpm build
+
+# Build all packages using the root build command
+RUN pnpm build
 
 # Generate database
 RUN pnpm db:generate

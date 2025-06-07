@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -35,6 +35,10 @@ model User {
   ownedProjects    Project[]       @relation("ProjectOwner")
   createdTestCases TestCase[]      @relation("TestCaseCreator")
   createdReleases  Release[]       @relation("ReleaseCreator")
+  notifications    Notification[]
+  integrations     Integration[]
+  createdDocuments Document[]      @relation("DocumentCreator")
+  attachments      Attachment[]
 
   @@index([email])
   @@index([role])
@@ -129,6 +133,10 @@ model Project {
   sprints        Sprint[]
   testCases      TestCase[]
   testSuites     TestSuite[]
+  notifications  Notification[]
+  metrics        Metric[]
+  integrations   Integration[]
+  documents      Document[]
 
   @@index([organizationId])
   @@index([ownerId])
@@ -180,7 +188,7 @@ model Feature {
   completedAt        DateTime?
   activity_logs      ActivityLog[]
   bugs               Bug[]
-  comments           Comment[]
+  comments           Comment[]     @relation("CommentToFeature")
   assignedUser       User?         @relation("AssignedUser", fields: [assignedUserId], references: [id])
   parentFeature      Feature?      @relation("FeatureHierarchy", fields: [parentFeatureId], references: [id])
   childFeatures      Feature[]     @relation("FeatureHierarchy")
@@ -225,7 +233,7 @@ model Bug {
   project          Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   reportedUser     User?         @relation("ReportedUser", fields: [reportedUserId], references: [id])
   sprint           Sprint?       @relation(fields: [sprintId], references: [id])
-  comments         Comment[]
+  comments         Comment[]     @relation("CommentToBug")
 
   @@index([projectId])
   @@index([sprintId])
@@ -328,30 +336,24 @@ model ActivityLog {
 }
 
 model Comment {
-  id             String    @id @default(cuid())
-  content        String
-  userId         String
-  projectId      String
-  featureId      String?
-  bugId          String?
-  parentId       String?
-  entityId       String    @default("legacy")
-  entityType     String    @default("LEGACY")
-  metadata       Json?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  users          User      @relation(fields: [userId], references: [id])
-  bugs           Bug?      @relation(fields: [bugId], references: [id], onDelete: Cascade)
-  features       Feature?  @relation(fields: [featureId], references: [id], onDelete: Cascade)
-  comments       Comment?  @relation("commentsTocomments", fields: [parentId], references: [id])
-  other_comments Comment[] @relation("commentsTocomments")
-  project        Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  content     String
+  userId      String
+  projectId   String
+  entityType  String
+  entityId    String
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  document    Document? @relation("CommentToDocument", fields: [entityId], references: [id], map: "comment_document_fkey")
+  feature     Feature?  @relation("CommentToFeature", fields: [entityId], references: [id], map: "comment_feature_fkey")
+  bug         Bug?      @relation("CommentToBug", fields: [entityId], references: [id], map: "comment_bug_fkey")
 
-  @@index([projectId])
   @@index([userId])
-  @@index([bugId])
-  @@index([featureId])
-  @@index([parentId])
+  @@index([projectId])
+  @@index([entityType, entityId])
   @@map("comments")
 }
 
@@ -439,6 +441,118 @@ model ProjectMember {
   @@index([projectId])
   @@index([userId])
   @@map("project_members")
+}
+
+model Webhook {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  events      String[]
+  secret      String
+  status      String
+  projectId   String
+  createdById String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("webhooks")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  userId    String
+  projectId String?
+  phaseId   String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([type])
+  @@index([read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model Metric {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String
+  projectId   String
+  value       Float
+  target      Float?
+  unit        String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("metrics")
+}
+
+model Integration {
+  id          String   @id @default(cuid())
+  name        String
+  type        String
+  status      String
+  projectId   String
+  createdById String
+  config      Json?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  logs        IntegrationLog[]
+  settings    IntegrationSetting?
+
+  @@index([projectId])
+  @@index([createdById])
+  @@index([type])
+  @@index([status])
+  @@map("integrations")
+}
+
+model IntegrationLog {
+  id            String     @id @default(cuid())
+  level         String
+  message       String
+  metadata      Json?
+  integrationId String
+  createdAt     DateTime   @default(now())
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@index([integrationId])
+  @@index([level])
+  @@index([createdAt])
+  @@map("integration_logs")
+}
+
+model IntegrationSetting {
+  id            String     @id @default(cuid())
+  integrationId String     @unique
+  syncInterval  Int
+  retryAttempts Int
+  timeout       Int
+  enabled       Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@index([integrationId])
+  @@map("integration_settings")
 }
 
 enum UserRole {
@@ -562,4 +676,115 @@ enum ReleaseStatus {
   READY
   DEPLOYED
   CANCELLED
+}
+
+enum Methodology {
+  SCRUM
+  KANBAN
+  WATERFALL
+  AGILE
+}
+
+enum TaskType {
+  DEVELOPMENT
+  TESTING
+  DOCUMENTATION
+  REVIEW
+  DEPLOYMENT
+}
+
+model WorkflowTemplate {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  type        String
+  status      String
+  category    String
+  methodology Methodology
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  phases      PhaseTemplate[]
+
+  @@map("workflow_templates")
+}
+
+model PhaseTemplate {
+  id           String         @id @default(cuid())
+  name         String
+  description  String?
+  order        Int
+  status       String
+  type         String
+  isRequired   Boolean        @default(true)
+  allowedRoles String[]
+  workflowId   String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  workflow     WorkflowTemplate @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  tasks        TaskTemplate[]
+
+  @@map("phase_templates")
+}
+
+model TaskTemplate {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  type        TaskType
+  order       Int
+  isRequired  Boolean       @default(true)
+  complexity  String
+  phaseId     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  phase       PhaseTemplate @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+
+  @@map("task_templates")
+}
+
+model Document {
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  type        String
+  status      String
+  version     String
+  tags        String[]
+  metadata    Json?
+  projectId   String
+  phaseId     String
+  createdById String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+  attachments Attachment[]
+  comments    Comment[] @relation("CommentToDocument")
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy   User      @relation("DocumentCreator", fields: [createdById], references: [id])
+
+  @@index([projectId])
+  @@index([phaseId])
+  @@index([createdById])
+  @@index([status])
+  @@map("documents")
+}
+
+model Attachment {
+  id          String    @id @default(cuid())
+  name        String
+  type        String
+  url         String
+  size        Int
+  metadata    Json?
+  userId      String
+  documentId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  document    Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([documentId])
+  @@map("attachments")
 }

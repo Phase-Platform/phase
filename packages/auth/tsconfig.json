@@ -1,0 +1,12 @@
+{
+  "extends": "../../tools/typescript/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "outDir": "./dist",
+    "types": ["node", "next-auth", "@prisma/client"]
+  },
+  "include": ["src/**/*"]
+}
